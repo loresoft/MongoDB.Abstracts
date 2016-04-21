@@ -4,7 +4,9 @@
 
 The MongoDB Abstracts library defines abstract base classes for repository pattern.
 
-[![NuGet Version](https://img.shields.io/nuget/v/MongoDB.Abstracts.svg?style=flat-square)](https://www.nuget.org/packages/MongoDB.Abstracts/)
+[![Build status](https://ci.appveyor.com/api/projects/status/4linx1kr2kqlohpg?svg=true)](https://ci.appveyor.com/project/LoreSoft/mongodb-abstracts)   
+
+[![NuGet Version](https://img.shields.io/nuget/v/MongoDB.Abstracts.svg?style=flat-square)](https://www.nuget.org/packages/MongoDB.Abstracts/)   
 
 ## Download
 
