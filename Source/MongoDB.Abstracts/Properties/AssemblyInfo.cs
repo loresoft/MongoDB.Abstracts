@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("MongoDB.Repository")]
+[assembly: AssemblyTitle("MongoDB.Abstracts")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

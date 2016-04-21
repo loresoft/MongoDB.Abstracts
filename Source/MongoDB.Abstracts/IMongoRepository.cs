@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MongoDB.Repository
+namespace MongoDB.Abstracts
 {
     /// <summary>
     /// An <c>interface</c> for common MongoDB data operations.

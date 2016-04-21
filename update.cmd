@@ -1,3 +1,3 @@
 @echo off
-NuGet.exe update "Source\MongoDB.Repository.sln" -r "Source\packages"
+NuGet.exe update "Source\MongoDB.Abstracts.sln" -r "Source\packages"
 msbuild master.proj /t:refresh

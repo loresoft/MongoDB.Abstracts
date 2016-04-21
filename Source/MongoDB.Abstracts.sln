@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Repository", "MongoDB.Repository\MongoDB.Repository.csproj", "{38AA4587-BD6D-4C87-886B-71509ED34D99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Abstracts", "MongoDB.Abstracts\MongoDB.Abstracts.csproj", "{38AA4587-BD6D-4C87-886B-71509ED34D99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Repository.Tests", "MongoDB.Repository.Tests\MongoDB.Repository.Tests.csproj", "{8A460773-F38F-4526-B84F-9158C98D36C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Abstracts.Tests", "MongoDB.Abstracts.Tests\MongoDB.Abstracts.Tests.csproj", "{8A460773-F38F-4526-B84F-9158C98D36C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace MongoDB.Repository
+namespace MongoDB.Abstracts
 {
     /// <summary>
     /// An <c>interface</c> for common data operations.

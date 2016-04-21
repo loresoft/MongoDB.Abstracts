@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MongoDB.Abstracts</id>
+    <version>1.0.0</version>
+    <authors>LoreSoft</authors>
+    <owners>LoreSoft</owners>
+    <licenseUrl>https://raw.githubusercontent.com/loresoft/MongoDB.Abstracts/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/loresoft/MongoDB.Abstracts</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The MongoDB Abstracts library defines abstract base classes for repository pattern.</description>
+    <summary>MongoDB Repository Pattern</summary>
+    <copyright>Copyright (c) 2016, LoreSoft</copyright>
+    <language>en-US</language>
+    <tags>MongoDB Repository Abstract Pattern</tags>
+    <dependencies>
+      <dependency id="MongoDB.Driver" version="2.2.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\MongoDB.Abstracts.dll" target="lib\net45\" />
+    <file src="bin\Release\MongoDB.Abstracts.pdb" target="lib\net45\" />
+    <file src="bin\Release\MongoDB.Abstracts.XML" target="lib\net45\" />
+    <file src="**\*.cs" target="src" />
+    <file src="..\GlobalAssemblyInfo.cs" target="src" />
+  </files>
+</package>

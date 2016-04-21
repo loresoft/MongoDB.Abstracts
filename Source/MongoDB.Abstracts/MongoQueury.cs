@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace MongoDB.Repository
+namespace MongoDB.Abstracts
 {
     /// <summary>
     /// A MongoDB data query base class.
@@ -240,24 +240,6 @@ namespace MongoDB.Repository
         /// The key expression for the specified key.
         /// </returns>
         protected abstract Expression<Func<TEntity, bool>> KeyExpression(TKey key);
-
-
-        /// <summary>
-        /// Called before an update.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        protected virtual void BeforeUpdate(TEntity entity)
-        {
-        }
-
-        /// <summary>
-        /// Called before an insert.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        protected virtual void BeforeInsert(TEntity entity)
-        {
-            BeforeUpdate(entity);
-        }
 
 
         /// <summary>

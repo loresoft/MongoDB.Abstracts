@@ -1,2 +1,36 @@
-# MongoDB.Repository
-MongoDB abstract repository pattern
+# MongoDB.Abstracts
+
+## Overview
+
+The MongoDB Abstracts library defines abstract base classes for repository pattern.
+
+[![NuGet Version](https://img.shields.io/nuget/v/MongoDB.Abstracts.svg?style=flat-square)](https://www.nuget.org/packages/MongoDB.Abstracts/)
+
+## Download
+
+The MongoDB.Abstracts library is available on nuget.org via package name `MongoDB.Abstracts`.
+
+To install MongoDB.Abstracts, run the following command in the Package Manager Console
+
+    PM> Install-Package MongoDB.Abstracts
+    
+More information about NuGet package available at
+<https://nuget.org/packages/MongoDB.Abstracts>
+
+## Development Builds
+
+Development builds are available on the myget.org feed.  A development build is promoted to the main NuGet feed when it's determined to be stable. 
+
+In your Package Manager settings add the following package source for development builds:
+<http://www.myget.org/F/loresoft/>
+
+### Features
+
+* interface for generic entity queries; `IEntityQuery<TEntity, TKey>`
+* interface for generic entity repository; `IEntityRepository<TEntity, TKey>`
+* interface for generic MongoDB queries; `IMongoQuery<TEntity, TKey>`
+* interface for generic MongoDB repository; `IMongoRepository<TEntity, TKey>`
+* base class for generic MongoDB queries; `MongoQueury<TEntity, TKey>`
+* base class for generic MongoDB repository; `MongoRepository<TEntity, TKey>`
+* interface for generic MongoDB entity; `IMongoEntity`
+* base class for generic MongoDB entity; `MongoEntity`

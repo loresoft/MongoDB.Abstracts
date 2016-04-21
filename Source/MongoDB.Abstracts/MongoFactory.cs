@@ -2,7 +2,7 @@
 using System.Configuration;
 using MongoDB.Driver;
 
-namespace MongoDB.Repository
+namespace MongoDB.Abstracts
 {
     /// <summary>
     /// A helper class for getting MongoDB database connection.

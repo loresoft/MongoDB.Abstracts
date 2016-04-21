@@ -7,8 +7,8 @@
     <ProjectGuid>{38AA4587-BD6D-4C87-886B-71509ED34D99}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MongoDB.Repository</RootNamespace>
-    <AssemblyName>MongoDB.Repository</AssemblyName>
+    <RootNamespace>MongoDB.Abstracts</RootNamespace>
+    <AssemblyName>MongoDB.Abstracts</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\MongoDB.Repository.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\MongoDB.Abstracts.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\MongoDB.Repository.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\MongoDB.Abstracts.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MongoDB.Bson, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
@@ -60,14 +60,17 @@
     </Compile>
     <Compile Include="IEntityQuery.cs" />
     <Compile Include="IEntityRepository.cs" />
+    <Compile Include="IMongoEntity.cs" />
     <Compile Include="IMongoQueury.cs" />
     <Compile Include="IMongoRepository.cs" />
+    <Compile Include="MongoEntity.cs" />
     <Compile Include="MongoFactory.cs" />
     <Compile Include="MongoQueury.cs" />
     <Compile Include="MongoRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MongoDB.Abstracts.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

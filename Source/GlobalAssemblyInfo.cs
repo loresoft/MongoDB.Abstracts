@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Reflection.AssemblyProduct("MongoDB.Repository")]
+[assembly: System.Reflection.AssemblyProduct("MongoDB.Abstracts")]
 [assembly: System.Reflection.AssemblyCompany("LoreSoft")]
 [assembly: System.Reflection.AssemblyCopyright("Copyright © 2016 LoreSoft")]
 [assembly: System.Reflection.AssemblyConfiguration("Release")]
@@ -21,7 +21,7 @@
 
 internal sealed partial class ThisAssembly {
     
-    internal const string AssemblyProduct = "MongoDB.Repository";
+    internal const string AssemblyProduct = "MongoDB.Abstracts";
     
     internal const string AssemblyCompany = "LoreSoft";
     

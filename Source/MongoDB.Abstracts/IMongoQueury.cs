@@ -1,23 +1,35 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using MongoDB.Driver;
 
-namespace MongoDB.Repository
+namespace MongoDB.Abstracts
 {
     /// <summary>
-    /// An <c>interface</c> for common query operations.
+    /// An <c>interface</c> for common MongoDB query operations.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    public interface IEntityQuery<TEntity, TKey> : IDisposable
+    public interface IMongoQuery<TEntity, TKey> : IEntityQuery<TEntity, TKey> 
         where TEntity : class
     {
+        /// <summary>
+        /// Gets the underling <see cref="IMongoCollection{TEntity}"/> used for queries.
+        /// </summary>
+        /// <value>
+        /// The underling <see cref="IMongoCollection{TEntity}"/>.
+        /// </value>
+        IMongoCollection<TEntity> Collection { get; }
+
+
         /// <summary>
         /// Find the entity with the specified <paramref name="key"/>.
         /// </summary>
         /// <param name="key">The key of the entity to find.</param>
         /// <returns>An instance of TEnity that has the specified identifier if found, otherwise null.</returns>
-        TEntity Find(TKey key);
+        Task<TEntity> FindAsync(TKey key);
 
         /// <summary>
         /// Find the first entity using the specified <paramref name="criteria"/> expression.
@@ -26,47 +38,26 @@ namespace MongoDB.Repository
         /// <returns>
         /// An instance of TEnity that matches the criteria if found, otherwise null.
         /// </returns>
-        TEntity FindOne(Expression<Func<TEntity, bool>> criteria);
+        Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria);
 
         /// <summary>
         /// Find all entities using the specified <paramref name="criteria"/> expression.
         /// </summary>
         /// <param name="criteria">The criteria expression.</param>
         /// <returns></returns>
-        IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>> criteria);
-
-        /// <summary>
-        /// Get all <typeparamref name="TEntity"/> entities as an IQueryable
-        /// </summary>
-        /// <returns>IQueryable of <typeparamref name="TEntity"/>.</returns>
-        IQueryable<TEntity> All();
+        Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria);
 
 
         /// <summary>
         /// Gets the number of entities in the collection.
         /// </summary>
         /// <returns></returns>
-        long Count();
-        
+        Task<long> CountAsync();
+
         /// <summary>
         /// Gets the number of entities in the collection with the specified <paramref name="criteria"/>.
         /// </summary>
         /// <returns></returns>
-        long Count(Expression<Func<TEntity, bool>> criteria);
-
-        /// <summary>
-        /// Determines if the specified <paramref name="criteria"/> exists.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <returns><c>true</c> if criteria expression is found; otherwise <c>false</c>.</returns>
-        bool Exists(Expression<Func<TEntity, bool>> criteria);
-
-
-        /// <summary>
-        /// Gets the key for the specified <paramref name="entity"/>.
-        /// </summary>
-        /// <param name="entity">The entity to get the key from.</param>
-        /// <returns>The key for the specified entity.</returns>
-        TKey EntityKey(TEntity entity);
+        Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria);
     }
 }

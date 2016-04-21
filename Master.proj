@@ -46,7 +46,7 @@
     <AssemblyInfo CodeLanguage="CS"
                   OutputFile="$(SourceFolder)\GlobalAssemblyInfo.cs"
                   GenerateClass="true"
-                  AssemblyProduct="MongoDB.Repository"
+                  AssemblyProduct="MongoDB.Abstracts"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
                   AssemblyConfiguration="$(BuildConfiguration)"
@@ -58,7 +58,7 @@
   </Target>
   
   <Target Name="Compile" DependsOnTargets="Clean;Version">
-    <MSBuild Projects="$(SourceFolder)\MongoDB.Repository.sln"
+    <MSBuild Projects="$(SourceFolder)\MongoDB.Abstracts.sln"
              Properties="Configuration=$(BuildConfiguration)"/>
   </Target>
 
@@ -113,14 +113,14 @@
     <!-- Update NuGet dependencies to match package version -->
     
     <!-- MongoDB -->
-    <XmlRead XmlFileName="$(SourceFolder)\MongoDB.Repository\packages.config"
+    <XmlRead XmlFileName="$(SourceFolder)\MongoDB.Abstracts\packages.config"
              XPath="/packages/package[@id='MongoDB.Driver']/@version">
       <Output TaskParameter="Value" ItemName="MongoDBDriverVersion" />
     </XmlRead>
 
     <Message Text="MongoDB.Driver Version: @(MongoDBDriverVersion)"/>
 
-    <XmlUpdate XmlFileName="$(SourceFolder)\MongoDB.Repository\MongoDB.Repository.nuspec"
+    <XmlUpdate XmlFileName="$(SourceFolder)\MongoDB.Abstracts\MongoDB.Abstracts.nuspec"
                Prefix="d" Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
                XPath="/d:package/d:metadata/d:dependencies/d:dependency[@id='MongoDB.Driver']/@version"
                Value="@(MongoDBDriverVersion)" />

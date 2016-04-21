@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace MongoDB.Repository
+namespace MongoDB.Abstracts
 {
     /// <summary>
     /// A MongoDB data repository base class.
@@ -333,5 +333,38 @@ namespace MongoDB.Repository
                 .DeleteManyAsync(criteria)
                 .ContinueWith(t => t.Result.DeletedCount);
         }
+
+
+        /// <summary>
+        /// Called before an insert.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        protected virtual void BeforeInsert(TEntity entity)
+        {
+            BeforeUpdate(entity);
+
+            var mongoEntity = entity as IMongoEntity;
+            if (mongoEntity == null)
+                return;
+
+            mongoEntity.Created = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Called before an update.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        protected virtual void BeforeUpdate(TEntity entity)
+        {
+            var mongoEntity = entity as IMongoEntity;
+            if (mongoEntity == null)
+                return;
+
+            if (mongoEntity.Created == DateTime.MinValue)
+                mongoEntity.Created = DateTime.Now;
+
+            mongoEntity.Updated = DateTime.Now;
+        }
+
     }
 }
