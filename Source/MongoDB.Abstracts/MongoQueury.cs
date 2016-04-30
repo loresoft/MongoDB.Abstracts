@@ -239,6 +239,12 @@ namespace MongoDB.Abstracts
         /// <returns>
         /// The key expression for the specified key.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// Example xpression for an entity key.
+        /// <![CDATA[entity => entity.Id == key]]>
+        /// </code>
+        /// </example>
         protected abstract Expression<Func<TEntity, bool>> KeyExpression(TKey key);
 
 

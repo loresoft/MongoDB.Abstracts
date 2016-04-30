@@ -61,9 +61,11 @@
     <Compile Include="IEntityQuery.cs" />
     <Compile Include="IEntityRepository.cs" />
     <Compile Include="IMongoEntity.cs" />
+    <Compile Include="IMongoEntityRepository.cs" />
     <Compile Include="IMongoQueury.cs" />
     <Compile Include="IMongoRepository.cs" />
     <Compile Include="MongoEntity.cs" />
+    <Compile Include="MongoEntityRepostiory.cs" />
     <Compile Include="MongoFactory.cs" />
     <Compile Include="MongoQueury.cs" />
     <Compile Include="MongoRepository.cs" />
