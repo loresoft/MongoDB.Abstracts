@@ -13,7 +13,7 @@ namespace MongoDB.Abstracts
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    public abstract class MongoRepository<TEntity, TKey> : MongoQueury<TEntity, TKey>, IMongoRepository<TEntity, TKey>
+    public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>, IMongoRepository<TEntity, TKey>
         where TEntity : class
     {
         /// <summary>

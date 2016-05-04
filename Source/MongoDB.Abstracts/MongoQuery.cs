@@ -13,7 +13,7 @@ namespace MongoDB.Abstracts
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    public abstract class MongoQueury<TEntity, TKey> : IMongoQuery<TEntity, TKey>
+    public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
         where TEntity : class
     {
         private readonly Lazy<IMongoCollection<TEntity>> _collection;
@@ -24,7 +24,7 @@ namespace MongoDB.Abstracts
         /// </summary>
         /// <param name="connectionName">Name of the connection.</param>
         /// <exception cref="ArgumentNullException"><paramref name="connectionName"/> is <see langword="null" />.</exception>
-        protected MongoQueury(string connectionName)
+        protected MongoQuery(string connectionName)
             : this(MongoFactory.GetMongoUrl(connectionName))
         {
 
@@ -35,7 +35,7 @@ namespace MongoDB.Abstracts
         /// </summary>
         /// <param name="mongoUrl">The mongo URL.</param>
         /// <exception cref="ArgumentNullException"><paramref name="mongoUrl"/> is <see langword="null" />.</exception>
-        protected MongoQueury(MongoUrl mongoUrl)
+        protected MongoQuery(MongoUrl mongoUrl)
         {
             if (mongoUrl == null)
                 throw new ArgumentNullException(nameof(mongoUrl));
