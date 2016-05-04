@@ -32,7 +32,9 @@ In your Package Manager settings add the following package source for developmen
 * interface for generic entity repository; `IEntityRepository<TEntity, TKey>`
 * interface for generic MongoDB queries; `IMongoQuery<TEntity, TKey>`
 * interface for generic MongoDB repository; `IMongoRepository<TEntity, TKey>`
-* base class for generic MongoDB queries; `MongoQueury<TEntity, TKey>`
+* base class for generic MongoDB queries; `MongoQuery<TEntity, TKey>`
 * base class for generic MongoDB repository; `MongoRepository<TEntity, TKey>`
 * interface for generic MongoDB entity; `IMongoEntity`
 * base class for generic MongoDB entity; `MongoEntity`
+* interface for generic MongoDB entity repository; `IMongoEntityRepository<TEntity>`
+* base class for generic MongoDB entity repository; `MongoEntityRepostiory<TEntity>`
