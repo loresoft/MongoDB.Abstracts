@@ -7,6 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Abstracts", "src\Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Abstracts.Tests", "test\MongoDB.Abstracts.Tests\MongoDB.Abstracts.Tests.csproj", "{8A460773-F38F-4526-B84F-9158C98D36C0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{AEBC64A5-8676-4D6D-8A0F-20F7207E722A}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		bootstrap.cmd = bootstrap.cmd
+		Master.proj = Master.proj
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -19,23 +18,11 @@ namespace MongoDB.Abstracts
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoRepository{TEntity, TKey}"/> class.
         /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="connectionName"/> is <see langword="null" />.</exception>
-        protected MongoRepository(string connectionName)
-            : base(connectionName)
+        /// <exception cref="ArgumentNullException"><paramref name="mongoDatabase"/> is <see langword="null" />.</exception>
+        protected MongoRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
         {
-        }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MongoRepository{TEntity, TKey}"/> class.
-        /// </summary>
-        /// <param name="mongoUrl">The mongo URL.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="mongoUrl"/> is <see langword="null" />.</exception>
-        protected MongoRepository(MongoUrl mongoUrl)
-            : base(mongoUrl)
-        {
         }
-
 
         /// <summary>
         /// Inserts the specified <paramref name="entity" /> to the underlying data repository.
@@ -55,7 +42,7 @@ namespace MongoDB.Abstracts
 
             return entity;
         }
-        
+
         /// <summary>
         /// Inserts the specified <paramref name="entity" /> to the underlying data repository.
         /// </summary>
@@ -129,7 +116,7 @@ namespace MongoDB.Abstracts
 
             return entity;
         }
-        
+
         /// <summary>
         /// Updates the specified <paramref name="entity" /> in the underlying data repository.
         /// </summary>
@@ -179,7 +166,7 @@ namespace MongoDB.Abstracts
         {
             return Update(entity);
         }
-        
+
         /// <summary>
         /// Saves the specified <paramref name="entity" /> in the underlying data repository by inserting if doesn't exist, or updating if it does.
         /// </summary>
@@ -365,6 +352,5 @@ namespace MongoDB.Abstracts
 
             mongoEntity.Updated = DateTime.Now;
         }
-
     }
 }

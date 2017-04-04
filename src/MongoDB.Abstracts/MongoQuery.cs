@@ -17,34 +17,20 @@ namespace MongoDB.Abstracts
         where TEntity : class
     {
         private readonly Lazy<IMongoCollection<TEntity>> _collection;
-        private readonly MongoUrl _mongoUrl;
+        private readonly IMongoDatabase _mongoDatabase;
+
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoRepository{TEntity, TKey}"/> class.
+        /// Initializes a new instance of the <see cref="MongoQuery{TEntity, TKey}"/> class.
         /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="connectionName"/> is <see langword="null" />.</exception>
-        protected MongoQuery(string connectionName)
-            : this(MongoFactory.GetMongoUrl(connectionName))
+        /// <exception cref="ArgumentNullException"><paramref name="mongoDatabase"/> is <see langword="null" />.</exception>
+        protected MongoQuery(IMongoDatabase mongoDatabase)
         {
-
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MongoRepository{TEntity, TKey}"/> class.
-        /// </summary>
-        /// <param name="mongoUrl">The mongo URL.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="mongoUrl"/> is <see langword="null" />.</exception>
-        protected MongoQuery(MongoUrl mongoUrl)
-        {
-            if (mongoUrl == null)
-                throw new ArgumentNullException(nameof(mongoUrl));
-
-            _mongoUrl = mongoUrl;
+            _mongoDatabase = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
             _collection = new Lazy<IMongoCollection<TEntity>>(CreateCollection);
         }
 
-         
+
         /// <summary>
         /// Gets the underling <see cref="IMongoCollection{TEntity}"/> used for queries.
         /// </summary>
@@ -104,7 +90,7 @@ namespace MongoDB.Abstracts
                 .Find(criteria)
                 .FirstOrDefault();
         }
-        
+
         /// <summary>
         /// Find the first entity using the specified <paramref name="criteria" /> expression.
         /// </summary>
@@ -138,7 +124,7 @@ namespace MongoDB.Abstracts
                 .AsQueryable()
                 .Where(criteria);
         }
-        
+
         /// <summary>
         /// Find all entities using the specified <paramref name="criteria" /> expression.
         /// </summary>
@@ -241,7 +227,7 @@ namespace MongoDB.Abstracts
         /// </returns>
         /// <example>
         /// <code>
-        /// Example xpression for an entity key.
+        /// Example expression for an entity key.
         /// <![CDATA[entity => entity.Id == key]]>
         /// </code>
         /// </example>
@@ -263,8 +249,7 @@ namespace MongoDB.Abstracts
         /// <returns></returns>
         protected virtual IMongoCollection<TEntity> CreateCollection()
         {
-            var client = new MongoClient(_mongoUrl);
-            var database = client.GetDatabase(_mongoUrl.DatabaseName);
+            var database = _mongoDatabase;
 
             string collectionName = CollectionName();
             var mongoCollection = CreateCollection(database, collectionName);

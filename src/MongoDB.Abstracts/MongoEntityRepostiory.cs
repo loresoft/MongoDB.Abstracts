@@ -8,25 +8,16 @@ namespace MongoDB.Abstracts
     /// A MongoDB data repository base class.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class MongoEntityRepostiory<TEntity> : MongoRepository<TEntity, string>, IMongoEntityRepository<TEntity> 
+    public abstract class MongoEntityRepostiory<TEntity> : MongoRepository<TEntity, string>, IMongoEntityRepository<TEntity>
         where TEntity : class, IMongoEntity
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoEntityRepostiory{TEntity}"/> class.
         /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="connectionName"/> is <see langword="null" />.</exception>
-        protected MongoEntityRepostiory(string connectionName) : base(connectionName)
+        /// <exception cref="ArgumentNullException"><paramref name="mongoDatabase"/> is <see langword="null" />.</exception>
+        protected MongoEntityRepostiory(IMongoDatabase mongoDatabase) : base(mongoDatabase)
         {
-        }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MongoEntityRepostiory{TEntity}"/> class.
-        /// </summary>
-        /// <param name="mongoUrl">The mongo URL.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="mongoUrl"/> is <see langword="null" />.</exception>
-        protected MongoEntityRepostiory(MongoUrl mongoUrl) : base(mongoUrl)
-        {
         }
 
         /// <summary>

@@ -1,11 +1,12 @@
 using System;
 using System.Linq.Expressions;
+using MongoDB.Driver;
 
 namespace MongoDB.Abstracts.Tests.Data
 {
     public class UserRepository : MongoRepository<User, string>
     {
-        public UserRepository() : base("TestingConnection")
+        public UserRepository() : base(MongoFactory.GetDatabaseFromConnectionString("mongodb://localhost/Testing"))
         {
         }
 
