@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
@@ -61,16 +62,17 @@ namespace MongoDB.Abstracts
         /// Finds the entity with the specified identifier.
         /// </summary>
         /// <param name="key">The entity identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The entity with the specified identifier.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null" />.</exception>
-        public Task<TEntity> FindAsync(TKey key)
+        public Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
             return Collection
                 .Find(KeyExpression(key))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         /// <summary>
@@ -95,18 +97,19 @@ namespace MongoDB.Abstracts
         /// Find the first entity using the specified <paramref name="criteria" /> expression.
         /// </summary>
         /// <param name="criteria">The criteria expression.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// An instance of TEnity that matches the criteria if found, otherwise null.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">criteria</exception>
-        public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria)
+        public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (criteria == null)
                 throw new ArgumentNullException(nameof(criteria));
 
             return Collection
                 .Find(criteria)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         /// <summary>
@@ -129,13 +132,14 @@ namespace MongoDB.Abstracts
         /// Find all entities using the specified <paramref name="criteria" /> expression.
         /// </summary>
         /// <param name="criteria">The criteria expression.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">criteria</exception>
-        public Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria)
+        public Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Collection
                 .Find(criteria)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
@@ -164,9 +168,9 @@ namespace MongoDB.Abstracts
         /// Gets the number of entities in the collection.
         /// </summary>
         /// <returns></returns>
-        public Task<long> CountAsync()
+        public Task<long> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Collection.CountAsync(FilterDefinition<TEntity>.Empty);
+            return Collection.CountAsync(FilterDefinition<TEntity>.Empty, cancellationToken:cancellationToken);
         }
 
         /// <summary>
@@ -183,10 +187,11 @@ namespace MongoDB.Abstracts
         /// Gets the number of entities in the collection with the specified <paramref name="criteria" />.
         /// </summary>
         /// <param name="criteria">The criteria.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria)
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Collection.CountAsync(criteria);
+            return Collection.CountAsync(criteria, cancellationToken: cancellationToken);
         }
 
 
@@ -201,7 +206,7 @@ namespace MongoDB.Abstracts
         public bool Exists(Expression<Func<TEntity, bool>> criteria)
         {
             if (criteria == null)
-                throw new ArgumentNullException("criteria");
+                throw new ArgumentNullException(nameof(criteria));
 
             return Collection
                 .AsQueryable()

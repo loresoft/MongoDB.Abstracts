@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
@@ -47,11 +48,12 @@ namespace MongoDB.Abstracts
         /// Inserts the specified <paramref name="entity" /> to the underlying data repository.
         /// </summary>
         /// <param name="entity">The entity to be inserted.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// The entity that was inserted.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">entity</exception>
-        public Task<TEntity> InsertAsync(TEntity entity)
+        public Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -59,7 +61,7 @@ namespace MongoDB.Abstracts
             BeforeInsert(entity);
 
             return Collection
-                .InsertOneAsync(entity)
+                .InsertOneAsync(entity, cancellationToken: cancellationToken)
                 .ContinueWith(t => entity);
         }
 
@@ -112,7 +114,7 @@ namespace MongoDB.Abstracts
             var updateOptions = new UpdateOptions { IsUpsert = true };
             var key = EntityKey(entity);
 
-            var result = Collection.ReplaceOne(KeyExpression(key), entity, updateOptions);
+            Collection.ReplaceOne(KeyExpression(key), entity, updateOptions);
 
             return entity;
         }
@@ -121,11 +123,12 @@ namespace MongoDB.Abstracts
         /// Updates the specified <paramref name="entity" /> in the underlying data repository.
         /// </summary>
         /// <param name="entity">The entity to be updated.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// The entity that was updated.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">entity</exception>
-        public Task<TEntity> UpdateAsync(TEntity entity)
+        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -136,8 +139,8 @@ namespace MongoDB.Abstracts
             var key = EntityKey(entity);
 
             return Collection
-                .ReplaceOneAsync(KeyExpression(key), entity, updateOptions)
-                .ContinueWith(t => entity);
+                .ReplaceOneAsync(KeyExpression(key), entity, updateOptions, cancellationToken)
+                .ContinueWith(t => entity, cancellationToken);
         }
 
         /// <summary>
@@ -171,12 +174,13 @@ namespace MongoDB.Abstracts
         /// Saves the specified <paramref name="entity" /> in the underlying data repository by inserting if doesn't exist, or updating if it does.
         /// </summary>
         /// <param name="entity">The entity to be updated.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>
         /// The entity that was updated.
         /// </returns>
-        public Task<TEntity> SaveAsync(TEntity entity)
+        public Task<TEntity> SaveAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return UpdateAsync(entity);
+            return UpdateAsync(entity, cancellationToken);
         }
 
         /// <summary>
@@ -208,16 +212,17 @@ namespace MongoDB.Abstracts
         /// Deletes the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The number of documents deleted</returns>
         /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
-        public Task<long> DeleteAsync(TKey id)
+        public Task<long> DeleteAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
 
             return Collection
-                .DeleteOneAsync(KeyExpression(id))
-                .ContinueWith(t => t.Result.DeletedCount);
+                .DeleteOneAsync(KeyExpression(id), cancellationToken)
+                .ContinueWith(t => t.Result.DeletedCount, cancellationToken);
         }
 
 
@@ -240,15 +245,16 @@ namespace MongoDB.Abstracts
         /// Deletes the specified <paramref name="entity" /> from the underlying data repository.
         /// </summary>
         /// <param name="entity">The entity to be deleted.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The number of documents deleted</returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is <see langword="null" />.</exception>
-        public Task<long> DeleteAsync(TEntity entity)
+        public Task<long> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             var key = EntityKey(entity);
-            return DeleteAsync(key);
+            return DeleteAsync(key, cancellationToken);
         }
 
         /// <summary>
@@ -290,12 +296,13 @@ namespace MongoDB.Abstracts
         /// <summary>
         /// Deletes all documents from MongoDB collection.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The number of documents deleted</returns>
-        public Task<long> DeleteAllAsync()
+        public Task<long> DeleteAllAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return Collection
-                .DeleteManyAsync(FilterDefinition<TEntity>.Empty)
-                .ContinueWith(t => t.Result.DeletedCount);
+                .DeleteManyAsync(FilterDefinition<TEntity>.Empty, cancellationToken)
+                .ContinueWith(t => t.Result.DeletedCount, cancellationToken);
         }
 
         /// <summary>
@@ -313,8 +320,9 @@ namespace MongoDB.Abstracts
         /// Deletes all from collection that meet the specified <paramref name="criteria" />.
         /// </summary>
         /// <param name="criteria">The criteria.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The number of documents deleted</returns>
-        public Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria)
+        public Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Collection
                 .DeleteManyAsync(criteria)
