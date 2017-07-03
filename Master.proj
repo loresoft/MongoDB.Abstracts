@@ -64,7 +64,7 @@
           WorkingDirectory="$(MSBuildProjectDirectory)"/>
 
   </Target>
-  
+
   <Target Name="Compile" DependsOnTargets="Clean;Version">
     <MSBuild Projects="%(SolutionFiles.Identity)"
              Properties="Configuration=$(BuildConfiguration)"/>
