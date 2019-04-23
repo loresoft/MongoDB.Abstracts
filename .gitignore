@@ -110,3 +110,4 @@ UpgradeLog*.XML
 /build.txt
 /Tools
 *.GhostDoc.xml
+.vs

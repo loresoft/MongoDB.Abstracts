@@ -14,7 +14,7 @@ namespace MongoDB.Repository.Tests
         {
             Generator.Default.Configuration.Assemblies.IncludeAssemblyFor<User>();
 
-            var user = Generator.Default.Single<User>(c => c.Property(p => p.Id).Value(() => ObjectId.GenerateNewId().ToString()));
+            var user = Generator.Default.Single<User>(c => c.Property(p => p.Id).Value(v => ObjectId.GenerateNewId().ToString()));
             var repo = new UserRepository();
             repo.Insert(user);
 

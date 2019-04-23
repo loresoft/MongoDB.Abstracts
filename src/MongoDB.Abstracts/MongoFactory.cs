@@ -33,7 +33,7 @@ namespace MongoDB.Abstracts
             return mongoDatabase;
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD2_0
         /// <summary>
         /// Gets the <see cref="IMongoDatabase" /> with the specified connection name.
         /// </summary>
