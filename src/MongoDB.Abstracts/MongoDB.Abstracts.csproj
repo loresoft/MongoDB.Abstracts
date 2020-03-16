@@ -1,33 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\common.props" />
+
   <PropertyGroup>
-    <Description>The MongoDB Abstracts library defines abstract base classes for repository pattern.</Description>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>2.0.0.0</VersionPrefix>
-    <Authors>LoreSoft</Authors>
-    <TargetFrameworks>net452;netstandard1.5;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>MongoDB.Abstracts</AssemblyName>
-    <PackageId>MongoDB.Abstracts</PackageId>
-    <PackageTags>MongoDB;Repository;Pattern</PackageTags>
-    <PackageProjectUrl>https://github.com/loresoft/MongoDB.Abstracts</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/loresoft/MongoDB.Abstracts/master/LICENSE</PackageLicenseUrl>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.8.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">

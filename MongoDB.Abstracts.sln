@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDB.Abstracts", "src\MongoDB.Abstracts\MongoDB.Abstracts.csproj", "{38AA4587-BD6D-4C87-886B-71509ED34D99}"
 EndProject
@@ -10,8 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{AEBC64A5-8676-4D6D-8A0F-20F7207E722A}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
-		bootstrap.cmd = bootstrap.cmd
-		Master.proj = Master.proj
+		build\common.props = build\common.props
+		build\sourcelink.props = build\sourcelink.props
+		build\version.props = build\version.props
 	EndProjectSection
 EndProject
 Global
@@ -31,5 +32,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BBFC07D6-F734-4188-912A-F5DD7266AE5C}
 	EndGlobalSection
 EndGlobal

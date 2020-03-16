@@ -1,19 +1,34 @@
-version: 2.0.0.{build}
-os: Visual Studio 2017
+version: 3.0.0.{build}
+os: Visual Studio 2019
 environment:
-  Major: 2
-  Minor: 0
-  Patch: 0
+  ASPNETCORE_ENVIRONMENT: appveyor
+
+init:
+  - git config --global core.autocrlf input
+
+dotnet_csproj:
+  patch: true
+  file: 'build\version.props'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+
 configuration: Release
+
 services: mongodb
-before_build:
-- .\bootstrap.cmd
-build:
-  project: master.proj
-  verbosity: minimal
-test: off
+
+build_script:
+  - dotnet pack MongoDB.Abstracts.sln --configuration Release --include-symbols --include-source
+
+test_script:
+  - dotnet test MongoDB.Abstracts.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*"
+
 artifacts:
-- path: Build\*.nupkg
+- path: artifacts\*.nupkg
+  name: Packages
+
 deploy:
 - provider: Environment
   name: MyGet

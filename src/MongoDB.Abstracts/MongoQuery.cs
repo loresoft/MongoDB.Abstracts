@@ -161,7 +161,7 @@ namespace MongoDB.Abstracts
         /// <returns></returns>
         public long Count()
         {
-            return Collection.Count(FilterDefinition<TEntity>.Empty);
+            return Collection.CountDocuments(FilterDefinition<TEntity>.Empty);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace MongoDB.Abstracts
         /// <returns></returns>
         public Task<long> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Collection.CountAsync(FilterDefinition<TEntity>.Empty, cancellationToken:cancellationToken);
+            return Collection.CountDocumentsAsync(FilterDefinition<TEntity>.Empty, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace MongoDB.Abstracts
         /// <returns></returns>
         public long Count(Expression<Func<TEntity, bool>> criteria)
         {
-            return Collection.Count(criteria);
+            return Collection.CountDocuments(criteria);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace MongoDB.Abstracts
         /// <returns></returns>
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Collection.CountAsync(criteria, cancellationToken: cancellationToken);
+            return Collection.CountDocumentsAsync(criteria, cancellationToken: cancellationToken);
         }
 
 

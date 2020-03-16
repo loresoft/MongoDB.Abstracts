@@ -62,7 +62,7 @@ namespace MongoDB.Abstracts
 
             return Collection
                 .InsertOneAsync(entity, cancellationToken: cancellationToken)
-                .ContinueWith(t => entity);
+                .ContinueWith(t => entity, cancellationToken);
         }
 
         /// <summary>
@@ -111,10 +111,10 @@ namespace MongoDB.Abstracts
 
             BeforeUpdate(entity);
 
-            var updateOptions = new UpdateOptions { IsUpsert = true };
+            var options = new ReplaceOptions { IsUpsert = true };
             var key = EntityKey(entity);
 
-            Collection.ReplaceOne(KeyExpression(key), entity, updateOptions);
+            Collection.ReplaceOne(KeyExpression(key), entity, options);
 
             return entity;
         }
@@ -135,11 +135,11 @@ namespace MongoDB.Abstracts
 
             BeforeUpdate(entity);
 
-            var updateOptions = new UpdateOptions { IsUpsert = true };
+            var options = new ReplaceOptions { IsUpsert = true };
             var key = EntityKey(entity);
 
             return Collection
-                .ReplaceOneAsync(KeyExpression(key), entity, updateOptions, cancellationToken)
+                .ReplaceOneAsync(KeyExpression(key), entity, options, cancellationToken)
                 .ContinueWith(t => entity, cancellationToken);
         }
 
@@ -325,8 +325,8 @@ namespace MongoDB.Abstracts
         public Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Collection
-                .DeleteManyAsync(criteria)
-                .ContinueWith(t => t.Result.DeletedCount);
+                .DeleteManyAsync(criteria, cancellationToken)
+                .ContinueWith(t => t.Result.DeletedCount, cancellationToken);
         }
 
 
