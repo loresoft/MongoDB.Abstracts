@@ -8,14 +8,14 @@ namespace MongoDB.Abstracts
     /// A MongoDB data repository base class.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class MongoEntityRepostiory<TEntity> : MongoRepository<TEntity, string>, IMongoEntityRepository<TEntity>
+    public abstract class MongoEntityRepository<TEntity> : MongoRepository<TEntity, string>, IMongoEntityRepository<TEntity>
         where TEntity : class, IMongoEntity
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoEntityRepostiory{TEntity}"/> class.
+        /// Initializes a new instance of the <see cref="MongoEntityRepository{TEntity}"/> class.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="mongoDatabase"/> is <see langword="null" />.</exception>
-        protected MongoEntityRepostiory(IMongoDatabase mongoDatabase) : base(mongoDatabase)
+        protected MongoEntityRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
         {
 
         }
@@ -67,7 +67,7 @@ namespace MongoDB.Abstracts
         /// </returns>
         /// <example>
         ///   <code>
-        /// Example xpression for an entity key.
+        /// Example expression for an entity key.
         /// <![CDATA[entity => entity.Id == key]]></code>
         /// </example>
         protected override Expression<Func<TEntity, bool>> KeyExpression(string key)
