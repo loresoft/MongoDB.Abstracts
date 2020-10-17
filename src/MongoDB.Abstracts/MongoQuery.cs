@@ -14,12 +14,11 @@ namespace MongoDB.Abstracts
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
+    public abstract class MongoQuery<TEntity, TKey> : DisposableBase, IMongoQuery<TEntity, TKey>
         where TEntity : class
     {
         private readonly Lazy<IMongoCollection<TEntity>> _collection;
         private readonly IMongoDatabase _mongoDatabase;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoQuery{TEntity, TKey}"/> class.
@@ -284,13 +283,6 @@ namespace MongoDB.Abstracts
         {
 
         }
-
-
-        /// <summary>
-        /// Releases unmanaged and managed resources.
-        /// </summary>
-        void IDisposable.Dispose()
-        {
-        }
     }
+
 }

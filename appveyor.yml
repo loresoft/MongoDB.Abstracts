@@ -26,7 +26,7 @@ test_script:
   - dotnet test MongoDB.Abstracts.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*"
 
 artifacts:
-- path: artifacts\*.nupkg
+- path: artifacts\*.*nupkg
   name: Packages
 
 deploy:
