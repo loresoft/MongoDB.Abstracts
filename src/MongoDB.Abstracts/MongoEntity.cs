@@ -27,8 +27,8 @@ namespace MongoDB.Abstracts
         /// <value>
         /// The date the entity was created.
         /// </value>
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        public DateTime Created { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public DateTimeOffset Created { get; set; }
 
         /// <summary>
         /// Gets or sets the date the entity was updated.
@@ -36,7 +36,7 @@ namespace MongoDB.Abstracts
         /// <value>
         /// The date the entity was updated.
         /// </value>
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        public DateTime Updated { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public DateTimeOffset Updated { get; set; }
     }
 }

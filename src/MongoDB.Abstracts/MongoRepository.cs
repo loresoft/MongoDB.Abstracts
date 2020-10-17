@@ -342,7 +342,7 @@ namespace MongoDB.Abstracts
             if (mongoEntity == null)
                 return;
 
-            mongoEntity.Created = DateTime.Now;
+            mongoEntity.Created = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
@@ -355,10 +355,10 @@ namespace MongoDB.Abstracts
             if (mongoEntity == null)
                 return;
 
-            if (mongoEntity.Created == DateTime.MinValue)
-                mongoEntity.Created = DateTime.Now;
+            if (mongoEntity.Created == DateTimeOffset.MinValue)
+                mongoEntity.Created = DateTimeOffset.UtcNow;
 
-            mongoEntity.Updated = DateTime.Now;
+            mongoEntity.Updated = DateTimeOffset.UtcNow;
         }
     }
 }

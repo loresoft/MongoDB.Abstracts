@@ -26,8 +26,8 @@ namespace MongoDB.Abstracts
         /// <param name="entity">The entity.</param>
         protected override void BeforeInsert(TEntity entity)
         {
-            entity.Created = DateTime.Now;
-            entity.Updated = DateTime.Now;
+            entity.Created = DateTimeOffset.UtcNow;
+            entity.Updated = DateTimeOffset.UtcNow;
 
             base.BeforeInsert(entity);
         }
@@ -38,10 +38,10 @@ namespace MongoDB.Abstracts
         /// <param name="entity">The entity.</param>
         protected override void BeforeUpdate(TEntity entity)
         {
-            if (entity.Created == DateTime.MinValue)
-                entity.Created = DateTime.Now;
+            if (entity.Created == DateTimeOffset.MinValue)
+                entity.Created = DateTimeOffset.UtcNow;
 
-            entity.Updated = DateTime.Now;
+            entity.Updated = DateTimeOffset.UtcNow;
 
             base.BeforeUpdate(entity);
         }

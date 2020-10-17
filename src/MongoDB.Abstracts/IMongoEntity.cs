@@ -21,7 +21,7 @@ namespace MongoDB.Abstracts
         /// <value>
         /// The date the entity was created.
         /// </value>
-        DateTime Created { get; set; }
+        DateTimeOffset Created { get; set; }
 
         /// <summary>
         /// Gets or sets the date the entity was updated.
@@ -29,6 +29,6 @@ namespace MongoDB.Abstracts
         /// <value>
         /// The date the entity was updated.
         /// </value>
-        DateTime Updated { get; set; }
+        DateTimeOffset Updated { get; set; }
     }
 }
