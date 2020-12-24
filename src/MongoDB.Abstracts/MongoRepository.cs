@@ -336,13 +336,12 @@ namespace MongoDB.Abstracts
         /// <param name="entity">The entity.</param>
         protected virtual void BeforeInsert(TEntity entity)
         {
-            BeforeUpdate(entity);
-
             var mongoEntity = entity as IMongoEntity;
             if (mongoEntity == null)
                 return;
 
             mongoEntity.Created = DateTimeOffset.UtcNow;
+            mongoEntity.Updated = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
