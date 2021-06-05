@@ -25,14 +25,7 @@ namespace MongoDB.Abstracts
 
         }
 
-        /// <summary>
-        /// Inserts the specified <paramref name="entity" /> to the underlying data repository.
-        /// </summary>
-        /// <param name="entity">The entity to be inserted.</param>
-        /// <returns>
-        /// The entity that was inserted.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">entity</exception>
+        /// <inheritdoc/>
         public TEntity Insert(TEntity entity)
         {
             if (entity == null)
@@ -44,46 +37,23 @@ namespace MongoDB.Abstracts
             return entity;
         }
 
-        /// <summary>
-        /// Inserts the specified <paramref name="entity" /> to the underlying data repository.
-        /// </summary>
-        /// <param name="entity">The entity to be inserted.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>
-        /// The entity that was inserted.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">entity</exception>
-        public Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             BeforeInsert(entity);
 
-            return Collection
+            await Collection
                 .InsertOneAsync(entity, cancellationToken: cancellationToken)
-                .ContinueWith(t => entity, cancellationToken);
+                .ConfigureAwait(false);
+
+            return entity;
         }
 
-        /// <summary>
-        /// Inserts the specified <paramref name="entities" /> to the underlying data repository.
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <exception cref="System.ArgumentNullException">entities</exception>
-        public void Insert(IEnumerable<TEntity> entities)
-        {
-            if (entities == null)
-                throw new ArgumentNullException(nameof(entities));
 
-            foreach (var entity in entities)
-                Insert(entity);
-        }
-
-        /// <summary>
-        /// Inserts the specified <paramref name="entities" /> in a batch operation to the underlying data repository.
-        /// </summary>
-        /// <param name="entities">The entities to be inserted.</param>
-        /// <exception cref="System.ArgumentNullException">entities</exception>
+        /// <inheritdoc/>
         public void InsertBatch(IEnumerable<TEntity> entities)
         {
             if (entities == null)
@@ -96,14 +66,7 @@ namespace MongoDB.Abstracts
         }
 
 
-        /// <summary>
-        /// Updates the specified <paramref name="entity" /> in the underlying data repository.
-        /// </summary>
-        /// <param name="entity">The entity to be updated.</param>
-        /// <returns>
-        /// The entity that was updated.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">entity</exception>
+        /// <inheritdoc/>
         public TEntity Update(TEntity entity)
         {
             if (entity == null)
@@ -111,24 +74,38 @@ namespace MongoDB.Abstracts
 
             BeforeUpdate(entity);
 
-            var options = new ReplaceOptions { IsUpsert = true };
+            var options = new ReplaceOptions();
             var key = EntityKey(entity);
+            var filter = KeyExpression(key);
 
-            Collection.ReplaceOne(KeyExpression(key), entity, options);
+            Collection.ReplaceOne(filter, entity, options);
 
             return entity;
         }
 
-        /// <summary>
-        /// Updates the specified <paramref name="entity" /> in the underlying data repository.
-        /// </summary>
-        /// <param name="entity">The entity to be updated.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>
-        /// The entity that was updated.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">entity</exception>
-        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            BeforeUpdate(entity);
+
+            var options = new ReplaceOptions();
+            var key = EntityKey(entity);
+            var filter = KeyExpression(key);
+
+            await Collection
+                .ReplaceOneAsync(filter, entity, options, cancellationToken)
+                .ConfigureAwait(false);
+
+            return entity;
+        }
+
+
+
+        /// <inheritdoc/>
+        public TEntity Upsert(TEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -137,203 +114,114 @@ namespace MongoDB.Abstracts
 
             var options = new ReplaceOptions { IsUpsert = true };
             var key = EntityKey(entity);
+            var filter = KeyExpression(key);
 
-            return Collection
-                .ReplaceOneAsync(KeyExpression(key), entity, options, cancellationToken)
-                .ContinueWith(t => entity, cancellationToken);
+            Collection.ReplaceOne(filter, entity, options);
+
+            return entity;
         }
 
-        /// <summary>
-        /// Updates the specified <paramref name="entities" /> in the underlying data repository.
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <exception cref="System.ArgumentNullException">entities</exception>
-        public void Update(IEnumerable<TEntity> entities)
+        /// <inheritdoc/>
+        public async Task<TEntity> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            if (entities == null)
-                throw new ArgumentNullException(nameof(entities));
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
-            foreach (var entity in entities)
-                Update(entity);
+            BeforeUpdate(entity);
+
+            var options = new ReplaceOptions { IsUpsert = true };
+            var key = EntityKey(entity);
+            var filter = KeyExpression(key);
+
+            await Collection
+                .ReplaceOneAsync(filter, entity, options, cancellationToken)
+                .ConfigureAwait(false);
+
+            return entity;
         }
 
 
-        /// <summary>
-        /// Saves the specified <paramref name="entity" /> in the underlying data repository by inserting if doesn't exist, or updating if it does.
-        /// </summary>
-        /// <param name="entity">The entity to be updated.</param>
-        /// <returns>
-        /// The entity that was updated.
-        /// </returns>
-        public TEntity Save(TEntity entity)
-        {
-            return Update(entity);
-        }
-
-        /// <summary>
-        /// Saves the specified <paramref name="entity" /> in the underlying data repository by inserting if doesn't exist, or updating if it does.
-        /// </summary>
-        /// <param name="entity">The entity to be updated.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>
-        /// The entity that was updated.
-        /// </returns>
-        public Task<TEntity> SaveAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return UpdateAsync(entity, cancellationToken);
-        }
-
-        /// <summary>
-        /// Saves the specified <paramref name="entities" /> in the underlying data repository by inserting if doesn't exist, or updating if it does.
-        /// </summary>
-        /// <param name="entities"></param>
-        public void Save(IEnumerable<TEntity> entities)
-        {
-            Update(entities);
-        }
-
-
-        /// <summary>
-        /// Deletes the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>The number of documents deleted</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        /// <inheritdoc/>
         public long Delete(TKey id)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
 
-            var result = Collection.DeleteOne(KeyExpression(id));
+            var filter = KeyExpression(id);
+
+            var result = Collection.DeleteOne(filter);
+            
             return result.DeletedCount;
         }
 
-        /// <summary>
-        /// Deletes the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The number of documents deleted</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
-        public Task<long> DeleteAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public async Task<long> DeleteAsync(TKey id, CancellationToken cancellationToken = default)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
 
-            return Collection
-                .DeleteOneAsync(KeyExpression(id), cancellationToken)
-                .ContinueWith(t => t.Result.DeletedCount, cancellationToken);
+            var filter = KeyExpression(id);
+
+            var result = await Collection
+                .DeleteOneAsync(filter, cancellationToken)
+                .ConfigureAwait(false);
+
+            return result.DeletedCount;
         }
 
 
-        /// <summary>
-        /// Deletes the specified <paramref name="entity" /> from the underlying data repository.
-        /// </summary>
-        /// <param name="entity">The entity to be deleted.</param>
-        /// <returns>The number of documents deleted</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is <see langword="null" />.</exception>
+        /// <inheritdoc/>
         public long Delete(TEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             var key = EntityKey(entity);
+
             return Delete(key);
         }
 
-        /// <summary>
-        /// Deletes the specified <paramref name="entity" /> from the underlying data repository.
-        /// </summary>
-        /// <param name="entity">The entity to be deleted.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The number of documents deleted</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is <see langword="null" />.</exception>
-        public Task<long> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public async Task<long> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             var key = EntityKey(entity);
-            return DeleteAsync(key, cancellationToken);
-        }
 
-        /// <summary>
-        /// Deletes the specified <paramref name="entities" /> from the underlying data repository.
-        /// </summary>
-        /// <param name="entities">The entities to be deleted.</param>
-        /// <returns>
-        /// The number of documents deleted
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <exception cref="ArgumentNullException"><paramref name="entities" /> is <see langword="null" />.</exception>
-        public long Delete(IEnumerable<TEntity> entities)
-        {
-            if (entities == null)
-                throw new ArgumentNullException(nameof(entities));
-
-            long count = 0;
-
-            foreach (var entity in entities)
-            {
-                var key = EntityKey(entity);
-                count += Delete(key);
-            }
-
-            return count;
+            return await DeleteAsync(key, cancellationToken).ConfigureAwait(false);
         }
 
 
-        /// <summary>
-        /// Deletes all documents from MongoDB collection.
-        /// </summary>
-        /// <returns>The number of documents deleted</returns>
-        public long DeleteAll()
-        {
-            var result = Collection.DeleteMany(FilterDefinition<TEntity>.Empty);
-            return result.DeletedCount;
-        }
-
-        /// <summary>
-        /// Deletes all documents from MongoDB collection.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The number of documents deleted</returns>
-        public Task<long> DeleteAllAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Collection
-                .DeleteManyAsync(FilterDefinition<TEntity>.Empty, cancellationToken)
-                .ContinueWith(t => t.Result.DeletedCount, cancellationToken);
-        }
-
-        /// <summary>
-        /// Deletes all from collection that meet the specified <paramref name="criteria" />.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <returns>The number of documents deleted</returns>
+        /// <inheritdoc/>
         public long DeleteAll(Expression<Func<TEntity, bool>> criteria)
         {
+            if (criteria == null) 
+                throw new ArgumentNullException(nameof(criteria));
+
             var result = Collection.DeleteMany(criteria);
+
             return result.DeletedCount;
         }
 
-        /// <summary>
-        /// Deletes all from collection that meet the specified <paramref name="criteria" />.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The number of documents deleted</returns>
-        public Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public async Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
         {
-            return Collection
+            if (criteria == null)
+                throw new ArgumentNullException(nameof(criteria));
+
+            var result = await Collection
                 .DeleteManyAsync(criteria, cancellationToken)
-                .ContinueWith(t => t.Result.DeletedCount, cancellationToken);
+                .ConfigureAwait(false);
+
+            return result.DeletedCount;
         }
 
 
         /// <summary>
         /// Called before an insert.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="entity">The entity that is being inserted.</param>
         protected virtual void BeforeInsert(TEntity entity)
         {
             var mongoEntity = entity as IMongoEntity;
@@ -347,14 +235,14 @@ namespace MongoDB.Abstracts
         /// <summary>
         /// Called before an update.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="entity">The entity that is being updated.</param>
         protected virtual void BeforeUpdate(TEntity entity)
         {
             var mongoEntity = entity as IMongoEntity;
             if (mongoEntity == null)
                 return;
 
-            if (mongoEntity.Created == DateTimeOffset.MinValue)
+            if (mongoEntity.Created == default)
                 mongoEntity.Created = DateTimeOffset.UtcNow;
 
             mongoEntity.Updated = DateTimeOffset.UtcNow;

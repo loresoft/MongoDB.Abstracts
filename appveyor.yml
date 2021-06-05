@@ -1,10 +1,15 @@
-version: 4.0.0.{build}
+version: 5.0.0.{build}
 os: Visual Studio 2019
 environment:
   ASPNETCORE_ENVIRONMENT: appveyor
+  COVERALLS_REPO_TOKEN:
+    secure: fLecyAIGbJk7YBtO8UJ1g/7nSawvJs0EoBR9ckNjyMsoHTuXWxqb26tkGCkzeS66
 
 init:
   - git config --global core.autocrlf input
+
+install:
+  - dotnet tool install --global coveralls.net
 
 dotnet_csproj:
   patch: true
@@ -17,13 +22,17 @@ dotnet_csproj:
 
 configuration: Release
 
-services: mongodb
+services: 
+  - mongodb
 
 build_script:
   - dotnet pack MongoDB.Abstracts.sln --configuration Release --include-symbols --include-source
 
 test_script:
-  - dotnet test MongoDB.Abstracts.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*"
+  - dotnet test MongoDB.Abstracts.sln --configuration Release --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+
+after_test:
+  - ps: .\coveralls.ps1
 
 artifacts:
 - path: artifacts\*.*nupkg

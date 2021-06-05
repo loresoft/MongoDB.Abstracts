@@ -14,7 +14,7 @@ namespace MongoDB.Abstracts
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    public abstract class MongoQuery<TEntity, TKey> : DisposableBase, IMongoQuery<TEntity, TKey>
+    public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
         where TEntity : class
     {
         private readonly Lazy<IMongoCollection<TEntity>> _collection;
@@ -31,57 +31,38 @@ namespace MongoDB.Abstracts
         }
 
 
-        /// <summary>
-        /// Gets the underling <see cref="IMongoCollection{TEntity}"/> used for queries.
-        /// </summary>
-        /// <value>
-        /// The underling <see cref="IMongoCollection{TEntity}"/>.
-        /// </value>
+        /// <inheritdoc/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public IMongoCollection<TEntity> Collection => _collection.Value;
 
 
-        /// <summary>
-        /// Finds the entity with the specified identifier.
-        /// </summary>
-        /// <param name="key">The entity identifier.</param>
-        /// <returns>The entity with the specified identifier.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null" />.</exception>
+        /// <inheritdoc/>
         public TEntity Find(TKey key)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
+            var filter = KeyExpression(key);
+
             return Collection
-                .Find(KeyExpression(key))
+                .Find(filter)
                 .FirstOrDefault();
         }
 
-        /// <summary>
-        /// Finds the entity with the specified identifier.
-        /// </summary>
-        /// <param name="key">The entity identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The entity with the specified identifier.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null" />.</exception>
-        public Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
+            var filter = KeyExpression(key);
+
             return Collection
-                .Find(KeyExpression(key))
+                .Find(filter)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        /// <summary>
-        /// Find the first entity using the specified <paramref name="criteria" /> expression.
-        /// </summary>
-        /// <param name="criteria">The criteria expression.</param>
-        /// <returns>
-        /// An instance of TEnity that matches the criteria if found, otherwise null.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">criteria</exception>
+        /// <inheritdoc/>
         public TEntity FindOne(Expression<Func<TEntity, bool>> criteria)
         {
             if (criteria == null)
@@ -92,16 +73,8 @@ namespace MongoDB.Abstracts
                 .FirstOrDefault();
         }
 
-        /// <summary>
-        /// Find the first entity using the specified <paramref name="criteria" /> expression.
-        /// </summary>
-        /// <param name="criteria">The criteria expression.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>
-        /// An instance of TEnity that matches the criteria if found, otherwise null.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">criteria</exception>
-        public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
         {
             if (criteria == null)
                 throw new ArgumentNullException(nameof(criteria));
@@ -111,12 +84,7 @@ namespace MongoDB.Abstracts
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        /// <summary>
-        /// Find all entities using the specified <paramref name="criteria" /> expression.
-        /// </summary>
-        /// <param name="criteria">The criteria expression.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">criteria</exception>
+        /// <inheritdoc/>
         public IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>> criteria)
         {
             if (criteria == null)
@@ -127,14 +95,8 @@ namespace MongoDB.Abstracts
                 .Where(criteria);
         }
 
-        /// <summary>
-        /// Find all entities using the specified <paramref name="criteria" /> expression.
-        /// </summary>
-        /// <param name="criteria">The criteria expression.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">criteria</exception>
-        public Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
         {
             return Collection
                 .Find(criteria)
@@ -142,74 +104,35 @@ namespace MongoDB.Abstracts
         }
 
 
-        /// <summary>
-        /// Get all <typeparamref name="TEntity" /> entities as an IQueryable
-        /// </summary>
-        /// <returns>
-        /// IQueryable of <typeparamref name="TEntity" />.
-        /// </returns>
+        /// <inheritdoc/>
         public IQueryable<TEntity> All()
         {
             return Collection.AsQueryable();
         }
 
 
-        /// <summary>
-        /// Gets the number of entities in the collection.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public long Count()
         {
             return Collection.CountDocuments(FilterDefinition<TEntity>.Empty);
         }
 
-        /// <summary>
-        /// Gets the number of entities in the collection.
-        /// </summary>
-        /// <returns></returns>
-        public Task<long> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public Task<long> CountAsync(CancellationToken cancellationToken = default)
         {
             return Collection.CountDocumentsAsync(FilterDefinition<TEntity>.Empty, cancellationToken: cancellationToken);
         }
 
-        /// <summary>
-        /// Gets the number of entities in the collection with the specified <paramref name="criteria" />.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public long Count(Expression<Func<TEntity, bool>> criteria)
         {
             return Collection.CountDocuments(criteria);
         }
 
-        /// <summary>
-        /// Gets the number of entities in the collection with the specified <paramref name="criteria" />.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default(CancellationToken))
+        /// <inheritdoc/>
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
         {
             return Collection.CountDocumentsAsync(criteria, cancellationToken: cancellationToken);
-        }
-
-
-        /// <summary>
-        /// Determines if the specified <paramref name="criteria" /> exists.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <returns>
-        ///   <c>true</c> if criteria expression is found; otherwise <c>false</c>.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">criteria</exception>
-        public bool Exists(Expression<Func<TEntity, bool>> criteria)
-        {
-            if (criteria == null)
-                throw new ArgumentNullException(nameof(criteria));
-
-            return Collection
-                .AsQueryable()
-                .Any(criteria);
         }
 
 
@@ -220,7 +143,7 @@ namespace MongoDB.Abstracts
         /// <returns>
         /// The key for the specified entity.
         /// </returns>
-        public abstract TKey EntityKey(TEntity entity);
+        protected abstract TKey EntityKey(TEntity entity);
 
         /// <summary>
         /// Gets the key expression with the specified <paramref name="key" />.
