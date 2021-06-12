@@ -6,15 +6,3 @@ updates:
     interval: daily
     time: "11:00"
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: MongoDB.Driver
-    versions:
-    - 2.11.6
-    - 2.12.0
-    - 2.12.1
-  - dependency-name: Microsoft.NET.Test.Sdk
-    versions:
-    - 16.9.1
-  - dependency-name: coverlet.msbuild
-    versions:
-    - 3.0.2
