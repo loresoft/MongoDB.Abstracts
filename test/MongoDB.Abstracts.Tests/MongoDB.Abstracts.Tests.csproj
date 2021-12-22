@@ -19,10 +19,10 @@
 		<PackageReference Include="DataGenerator" Version="5.0.0.178" />
 		<PackageReference Include="FluentAssertions" Version="6.2.0" />
 		<PackageReference Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="Scrutor" Version="3.3.0" />
 		<PackageReference Include="xunit" Version="2.4.1" />
