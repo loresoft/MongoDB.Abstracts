@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using MongoDB.Abstracts.Tests.Models;
 using MongoDB.Abstracts.Tests.Services;
 using MongoDB.Driver;
+
 using Xunit;
 using Xunit.Abstractions;
 

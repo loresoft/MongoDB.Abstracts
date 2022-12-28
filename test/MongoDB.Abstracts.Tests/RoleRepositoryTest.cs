@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using MongoDB.Abstracts.Tests.Models;
 using MongoDB.Bson;
+
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,7 +43,7 @@ namespace MongoDB.Abstracts.Tests
         [Fact]
         public async Task CreateRoleBatch()
         {
-            var roles = new[] { 
+            var roles = new[] {
                 new Role
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
@@ -58,7 +62,7 @@ namespace MongoDB.Abstracts.Tests
             roleRepo.Should().NotBeNull();
 
             roleRepo.InsertBatch(roles);
-            
+
             var roleQuery = Services.GetRequiredService<IMongoEntityQuery<Role>>();
             var results = await roleQuery.FindAllAsync(r => r.NormalizedName == "batchrole");
             results.Should().NotBeNull();

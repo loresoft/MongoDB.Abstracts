@@ -1,7 +1,9 @@
 ﻿using System;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Xunit.Abstractions;
 
 namespace MongoDB.Abstracts.Tests
@@ -50,7 +52,7 @@ namespace MongoDB.Abstracts.Tests
                     var configuration = provider.GetRequiredService<IConfiguration>();
                     var connectionString = configuration.GetConnectionString("MongoUnitTest");
 
-                    return MongoFactory.GetDatabaseFromConnectionString(connectionString); ;
+                    return MongoFactory.GetDatabaseFromConnectionString(connectionString);
                 })
                 .AddSingleton(typeof(IMongoEntityQuery<>), typeof(MongoEntityQuery<>))
                 .AddSingleton(typeof(IMongoEntityRepository<>), typeof(MongoEntityRepository<>));

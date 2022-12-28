@@ -1,10 +1,15 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DataGenerator;
+
+using Bogus;
+
 using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using MongoDB.Abstracts.Tests.Models;
-using MongoDB.Abstracts.Tests.Profiles;
+using MongoDB.Bson;
+
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,20 +22,16 @@ namespace MongoDB.Abstracts.Tests
         {
         }
 
-        protected override void ConfigureServices(IServiceCollection services)
-        {
-            base.ConfigureServices(services);
-
-            services.AddSingleton(_ => Generator.Create(c => c.Profile<ItemProfile>()));
-        }
-
         [Fact]
         public async Task FullTestAsync()
         {
-            var generator = Services.GetRequiredService<Generator>();
+            var generator = new Faker<Item>()
+                .RuleFor(p => p.Id, _ => ObjectId.GenerateNewId().ToString())
+                .RuleFor(p => p.Name, f => f.Name.FullName())
+                .RuleFor(p => p.Description, f => f.Lorem.Sentence())
+                .RuleFor(p => p.OwnerId, f => f.PickRandom(Constants.Owners));
 
-            var item = generator.Single<Item>();
-
+            var item = generator.Generate();
 
             var repository = Services.GetRequiredService<IMongoEntityRepository<Item>>();
             repository.Should().NotBeNull();
@@ -80,10 +81,13 @@ namespace MongoDB.Abstracts.Tests
         [Fact]
         public void FullTest()
         {
-            var generator = Services.GetRequiredService<Generator>();
+            var generator = new Faker<Item>()
+                .RuleFor(p => p.Id, _ => ObjectId.GenerateNewId().ToString())
+                .RuleFor(p => p.Name, f => f.Name.FullName())
+                .RuleFor(p => p.Description, f => f.Lorem.Sentence())
+                .RuleFor(p => p.OwnerId, f => f.PickRandom(Constants.Owners));
 
-            var item = generator.Single<Item>();
-
+            var item = generator.Generate();
 
             var repository = Services.GetRequiredService<IMongoEntityRepository<Item>>();
             repository.Should().NotBeNull();
