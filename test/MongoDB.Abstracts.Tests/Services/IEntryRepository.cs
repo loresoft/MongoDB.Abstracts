@@ -1,9 +1,8 @@
-﻿using MongoDB.Abstracts.Tests.Models;
+using MongoDB.Abstracts.Tests.Models;
 
-namespace MongoDB.Abstracts.Tests.Services
+namespace MongoDB.Abstracts.Tests.Services;
+
+public interface IEntryRepository : IMongoEntityRepository<Entry>
 {
-    public interface IEntryRepository : IMongoEntityRepository<Entry>
-    {
 
-    }
 }

@@ -1,57 +1,57 @@
 using System;
 using System.Linq.Expressions;
+
 using MongoDB.Driver;
 
-namespace MongoDB.Abstracts
+namespace MongoDB.Abstracts;
+
+/// <summary>
+/// A MongoDB data repository base class.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
+public class MongoEntityRepository<TEntity> : MongoRepository<TEntity, string>, IMongoEntityRepository<TEntity>
+    where TEntity : class, IMongoEntity
 {
     /// <summary>
-    /// A MongoDB data repository base class.
+    /// Initializes a new instance of the <see cref="MongoEntityRepository{TEntity}"/> class.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public class MongoEntityRepository<TEntity> : MongoRepository<TEntity, string>, IMongoEntityRepository<TEntity>
-        where TEntity : class, IMongoEntity
+    /// <exception cref="ArgumentNullException"><paramref name="mongoDatabase"/> is <see langword="null" />.</exception>
+    public MongoEntityRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MongoEntityRepository{TEntity}"/> class.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="mongoDatabase"/> is <see langword="null" />.</exception>
-        public MongoEntityRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
-        {
 
-        }
+    }
 
 
-        /// <inheritdoc/>
-        protected override void BeforeInsert(TEntity entity)
-        {
+    /// <inheritdoc/>
+    protected override void BeforeInsert(TEntity entity)
+    {
+        entity.Created = DateTimeOffset.UtcNow;
+        entity.Updated = DateTimeOffset.UtcNow;
+
+        base.BeforeInsert(entity);
+    }
+
+    /// <inheritdoc/>
+    protected override void BeforeUpdate(TEntity entity)
+    {
+        if (entity.Created == DateTimeOffset.MinValue)
             entity.Created = DateTimeOffset.UtcNow;
-            entity.Updated = DateTimeOffset.UtcNow;
 
-            base.BeforeInsert(entity);
-        }
+        entity.Updated = DateTimeOffset.UtcNow;
 
-        /// <inheritdoc/>
-        protected override void BeforeUpdate(TEntity entity)
-        {
-            if (entity.Created == DateTimeOffset.MinValue)
-                entity.Created = DateTimeOffset.UtcNow;
-
-            entity.Updated = DateTimeOffset.UtcNow;
-
-            base.BeforeUpdate(entity);
-        }
+        base.BeforeUpdate(entity);
+    }
 
 
-        /// <inheritdoc/>
-        protected override string EntityKey(TEntity entity)
-        {
-            return entity.Id;
-        }
+    /// <inheritdoc/>
+    protected override string EntityKey(TEntity entity)
+    {
+        return entity.Id;
+    }
 
-        /// <inheritdoc/>
-        protected override Expression<Func<TEntity, bool>> KeyExpression(string key)
-        {
-            return entity => entity.Id == key;
-        }
+    /// <inheritdoc/>
+    protected override Expression<Func<TEntity, bool>> KeyExpression(string key)
+    {
+        return entity => entity.Id == key;
     }
 }

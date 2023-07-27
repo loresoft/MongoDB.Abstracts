@@ -4,7 +4,7 @@
 
 The MongoDB Abstracts library defines abstract base classes for repository pattern.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/4linx1kr2kqlohpg?svg=true)](https://ci.appveyor.com/project/LoreSoft/mongodb-abstracts)   
+[![Build status](https://github.com/loresoft/MongoDB.Abstracts/workflows/Build/badge.svg)](https://github.com/loresoft/MongoDB.Abstracts/actions)
 
 [![NuGet Version](https://img.shields.io/nuget/v/MongoDB.Abstracts.svg?style=flat-square)](https://www.nuget.org/packages/MongoDB.Abstracts/)   
 
@@ -21,12 +21,6 @@ To install MongoDB.Abstracts, run the following command in the Package Manager C
 More information about NuGet package available at
 <https://nuget.org/packages/MongoDB.Abstracts>
 
-## Development Builds
-
-Development builds are available on the myget.org feed.  A development build is promoted to the main NuGet feed when it's determined to be stable. 
-
-In your Package Manager settings add the following package source for development builds:
-<http://www.myget.org/F/loresoft/>
 
 ### Features
 
