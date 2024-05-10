@@ -4,6 +4,7 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts.Tests.Services;
 
 
+[RegisterSingleton]
 public class UserRepository : MongoEntityRepository<User>, IUserRepository
 {
     public UserRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)

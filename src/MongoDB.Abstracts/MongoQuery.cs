@@ -195,8 +195,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// <returns></returns>
     protected virtual IMongoCollection<TEntity> CreateCollection(IMongoDatabase database, string collectionName)
     {
-        var mongoCollection = database.GetCollection<TEntity>(collectionName);
-        return mongoCollection;
+        return database.GetCollection<TEntity>(collectionName);
     }
 
     /// <summary>

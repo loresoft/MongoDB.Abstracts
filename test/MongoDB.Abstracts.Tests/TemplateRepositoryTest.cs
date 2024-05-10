@@ -1,23 +1,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using Bogus;
-
-using FluentAssertions;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using MongoDB.Abstracts.Tests.Models;
 using MongoDB.Bson;
 
-using Xunit;
-using Xunit.Abstractions;
-
 namespace MongoDB.Abstracts.Tests;
 
-public class TemplateRepositoryTest : TestServiceBase
+public class TemplateRepositoryTest : DatabaseTestBase
 {
-    public TemplateRepositoryTest(ITestOutputHelper outputHelper) : base(outputHelper)
+    public TemplateRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
     {
     }
 

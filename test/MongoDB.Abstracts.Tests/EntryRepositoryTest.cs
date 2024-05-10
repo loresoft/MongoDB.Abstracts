@@ -2,35 +2,19 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using MongoDB.Abstracts.Tests.Models;
 using MongoDB.Abstracts.Tests.Services;
 using MongoDB.Driver;
 
-using Xunit;
-using Xunit.Abstractions;
-
 namespace MongoDB.Abstracts.Tests;
 
 
-public class EntryRepositoryTest : TestServiceBase
+public class EntryRepositoryTest : DatabaseTestBase
 {
-    public EntryRepositoryTest(ITestOutputHelper outputHelper) : base(outputHelper)
+    public EntryRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
     {
-    }
-
-    protected override void ConfigureServices(IServiceCollection services)
-    {
-        base.ConfigureServices(services);
-
-        services.Scan(scan => scan
-            .FromAssemblyOf<UserRepository>()
-            .AddClasses(classes => classes.AssignableTo(typeof(IMongoQuery<,>))).AsImplementedInterfaces().AsSelf()
-            .WithSingletonLifetime()
-        );
     }
 
     [Fact]
