@@ -7,9 +7,9 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts.Tests;
 
 
-public class UserRepositoryTest : DatabaseTestBase
+public class DependencyInjectionTest : DatabaseTestBase
 {
-    public UserRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
+    public DependencyInjectionTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
     {
     }
 
@@ -72,25 +72,41 @@ public class UserRepositoryTest : DatabaseTestBase
 
 
     [Fact]
+    public void ResolveMongoDatabaseWithDiscriminator()
+    {
+        var mongoDatabase = Services.GetRequiredService<MongoDiscriminator<DiscriminatorConnection>>();
+        mongoDatabase.Should().NotBeNull();
+        mongoDatabase.MongoDatabase.DatabaseNamespace.DatabaseName.Should().Be("DiscriminatorUnitTesting");
+    }
+
+    [Fact]
+    public void ResolveMongoEntityRepositoryWithDiscriminator()
+    {
+        var mongoEntityRepo = Services.GetRequiredService<IMongoEntityRepository<DiscriminatorConnection, User>>();
+        mongoEntityRepo.Should().NotBeNull();
+
+        var collection = mongoEntityRepo.Collection;
+        collection.Should().NotBeNull();
+        collection.CollectionNamespace.FullName.Should().Be("DiscriminatorUnitTesting.User");
+    }
+
+    [Fact]
+    public void ResolveMongoEntityQueryWithDiscriminator()
+    {
+        var mongoEntityRepo = Services.GetRequiredService<IMongoEntityQuery<DiscriminatorConnection, User>>();
+        mongoEntityRepo.Should().NotBeNull();
+
+        var collection = mongoEntityRepo.Collection;
+        collection.Should().NotBeNull();
+        collection.CollectionNamespace.FullName.Should().Be("DiscriminatorUnitTesting.User");
+    }
+
+    [Fact]
     public void ResolveMongoDatabaseWithServiceKey()
     {
-        var mongoDatabase = Services.GetRequiredKeyedService<IMongoDatabase>("MongoUnitTest");
+        var mongoDatabase = Services.GetRequiredKeyedService<IMongoDatabase>("MongoKeyedDatabase");
         mongoDatabase.Should().NotBeNull();
+        mongoDatabase.DatabaseNamespace.DatabaseName.Should().Be("MongoKeyedDatabase");
     }
-
-    [Fact]
-    public void ResolveMongoEntityRepositoryWithServiceKey()
-    {
-        var mongoEntityRepo = Services.GetRequiredKeyedService<IMongoEntityRepository<User>>("MongoUnitTest");
-        mongoEntityRepo.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ResolveMongoEntityQueryWithServiceKey()
-    {
-        var mongoEntityRepo = Services.GetRequiredKeyedService<IMongoEntityQuery<User>>("MongoUnitTest");
-        mongoEntityRepo.Should().NotBeNull();
-    }
-
 
 }

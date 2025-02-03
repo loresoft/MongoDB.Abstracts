@@ -14,9 +14,15 @@ public class DatabaseFixture : TestApplicationFixture
 
         var services = builder.Services;
 
-        services.AddMongoDB("MongoUnitTest");
-        services.AddMongoDB("mongodb://localhost:27017/UnitTesting", "MongoUnitTest");
+        services.AddMongoRepository("MongoUnitTest");
+
+        services.AddMongoRepository<DiscriminatorConnection>("mongodb://localhost:27017/DiscriminatorUnitTesting");
+
+        services.AddMongoDatabase("mongodb://localhost:27017/MongoKeyedDatabase", "MongoKeyedDatabase");
 
         services.AddMongoDBAbstractsTests();
     }
 }
+
+
+public readonly struct DiscriminatorConnection { }

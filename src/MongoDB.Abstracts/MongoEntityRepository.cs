@@ -56,3 +56,16 @@ public class MongoEntityRepository<TEntity> : MongoRepository<TEntity, string>, 
         return entity => entity.Id == key;
     }
 }
+
+/// <summary>
+/// A MongoDB data repository base class by connection discriminator.  Discriminator used to register multiple instances.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <typeparam name="TDiscriminator">The type of the connection discriminator.</typeparam>
+public class MongoEntityRepository<TDiscriminator, TEntity> : MongoEntityRepository<TEntity>, IMongoEntityRepository<TDiscriminator, TEntity>
+    where TEntity : class, IMongoEntity
+{
+    public MongoEntityRepository(MongoDiscriminator<TDiscriminator> mongoDiscriminator) : base(mongoDiscriminator.MongoDatabase)
+    {
+    }
+}

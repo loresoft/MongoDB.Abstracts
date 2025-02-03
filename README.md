@@ -38,13 +38,13 @@ More information about NuGet package available at
 Register with dependency injection
 
 ```c#
-services.AddMongoDB("mongodb://localhost:27017/UnitTesting");
+services.AddMongoRepository("mongodb://localhost:27017/UnitTesting");
 ```
 
 Register using a connection name from the appsettings.json
 
 ```c#
-services.AddMongoDB("UnitTesting");
+services.AddMongoRepository("UnitTesting");
 ```
 
 ```json
