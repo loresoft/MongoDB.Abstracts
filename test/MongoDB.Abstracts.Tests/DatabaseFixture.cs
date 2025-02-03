@@ -15,6 +15,7 @@ public class DatabaseFixture : TestApplicationFixture
         var services = builder.Services;
 
         services.AddMongoDB("MongoUnitTest");
+        services.AddMongoDB("mongodb://localhost:27017/UnitTesting", "MongoUnitTest");
 
         services.AddMongoDBAbstractsTests();
     }

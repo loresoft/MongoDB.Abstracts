@@ -16,8 +16,8 @@ public class UserRepositoryTest : DatabaseTestBase
     [Fact]
     public void ResolveMongoDatabase()
     {
-        var cosmosFactory = Services.GetRequiredService<IMongoDatabase>();
-        cosmosFactory.Should().NotBeNull();
+        var mongoDatabase = Services.GetRequiredService<IMongoDatabase>();
+        mongoDatabase.Should().NotBeNull();
     }
 
     [Fact]
@@ -26,6 +26,13 @@ public class UserRepositoryTest : DatabaseTestBase
         var mongoEntityRepo = Services.GetRequiredService<IMongoEntityRepository<User>>();
         mongoEntityRepo.Should().NotBeNull();
         mongoEntityRepo.Should().BeOfType<UserRepository>();
+    }
+
+    [Fact]
+    public void ResolveMongoEntityQuery()
+    {
+        var mongoEntityRepo = Services.GetRequiredService<IMongoEntityQuery<User>>();
+        mongoEntityRepo.Should().NotBeNull();
     }
 
     [Fact]
@@ -60,4 +67,30 @@ public class UserRepositoryTest : DatabaseTestBase
         userClassRepo.Should().NotBeNull();
         userClassRepo.Should().BeOfType<UserRepository>();
     }
+
+
+
+
+    [Fact]
+    public void ResolveMongoDatabaseWithServiceKey()
+    {
+        var mongoDatabase = Services.GetRequiredKeyedService<IMongoDatabase>("MongoUnitTest");
+        mongoDatabase.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ResolveMongoEntityRepositoryWithServiceKey()
+    {
+        var mongoEntityRepo = Services.GetRequiredKeyedService<IMongoEntityRepository<User>>("MongoUnitTest");
+        mongoEntityRepo.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ResolveMongoEntityQueryWithServiceKey()
+    {
+        var mongoEntityRepo = Services.GetRequiredKeyedService<IMongoEntityQuery<User>>("MongoUnitTest");
+        mongoEntityRepo.Should().NotBeNull();
+    }
+
+
 }

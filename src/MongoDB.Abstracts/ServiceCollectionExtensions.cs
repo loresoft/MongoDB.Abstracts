@@ -74,7 +74,7 @@ public static class ServiceCollectionExtensions
 
     private static string ResolveConnectionString(IServiceProvider serviceProvider, string nameOrConnectionString)
     {
-        var isConnectionString = nameOrConnectionString.IndexOfAny([';', '=']) > 0;
+        var isConnectionString = nameOrConnectionString.IndexOfAny([';', '=', ':', '/']) > 0;
         if (isConnectionString)
             return nameOrConnectionString;
 

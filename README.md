@@ -32,3 +32,106 @@ More information about NuGet package available at
 * base class for generic MongoDB entity; `MongoEntity`
 * interface for generic MongoDB entity repository; `IMongoEntityRepository<TEntity>`
 * base class for generic MongoDB entity repository; `MongoEntityRepostiory<TEntity>`
+
+### Configuration
+
+Register with dependency injection
+
+```c#
+services.AddMongoDB("mongodb://localhost:27017/UnitTesting");
+```
+
+Register using a connection name from the appsettings.json
+
+```c#
+services.AddMongoDB("UnitTesting");
+```
+
+```json
+{
+  "ConnectionStrings": {
+    "UnitTesting": "mongodb://localhost:27017/UnitTesting"
+  }
+}
+```
+
+### Usage
+
+Find an entity by key
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+// find by key
+var role = await roleRepo.FindAsync("67a0dc52fa5ebe49f293a374");
+```
+
+Find one entity with query
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+// find one by query expression
+var role = await roleRepo.FindOneAsync(r => r.Name.StartsWith("Admin"))
+```
+
+Find many with query
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+// find one by query expression
+var roles = await roleRepo.FindAllAsync(r => r.Name.StartsWith("Admin"))
+```
+
+Use `IQueryable`
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+// Use IQueryable
+var roles = roleRepo.All()
+    .Where(r => r.IsActive)
+    .ToList();
+```
+
+Insert entity
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+var role = new Role { Name = "CreateReadRole" };
+
+var createdRole = await roleRepo.InsertAsync(role);
+```
+
+Update entity
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+// find by key
+var role = await roleRepo.FindAsync("67a0dc52fa5ebe49f293a374");
+
+// make changes
+role.Name = "UpdateRole";
+
+var updateRole = await roleRepo.UpdateAsync(role);
+```
+
+Delete entity by key
+
+```c#
+// dependency inject
+var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
+
+// items deleted
+var count = await roleRepo.DeleteAsync("67a0dc52fa5ebe49f293a374");
+```
+
