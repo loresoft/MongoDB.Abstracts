@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+// Ignore Spelling: Mongo
+
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 using MongoDB.Driver;
 
@@ -37,7 +34,7 @@ public interface IMongoQuery<TEntity, in TKey>
     /// </summary>
     /// <param name="key">The key of the entity to find.</param>
     /// <returns>An instance of TEntity that has the specified identifier if found, otherwise null.</returns>
-    TEntity Find(TKey key);
+    TEntity? Find(TKey key);
 
     /// <summary>
     /// Find the entity with the specified <paramref name="key"/>.
@@ -45,7 +42,7 @@ public interface IMongoQuery<TEntity, in TKey>
     /// <param name="key">The key of the entity to find.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An instance of TEnity that has the specified identifier if found, otherwise null.</returns>
-    Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default);
+    Task<TEntity?> FindAsync(TKey key, CancellationToken cancellationToken = default);
 
 
     /// <summary>
@@ -55,7 +52,7 @@ public interface IMongoQuery<TEntity, in TKey>
     /// <returns>
     /// An instance of TEntity that matches the criteria if found, otherwise null.
     /// </returns>
-    TEntity FindOne(Expression<Func<TEntity, bool>> criteria);
+    TEntity? FindOne(Expression<Func<TEntity, bool>> criteria);
 
     /// <summary>
     /// Find the first entity using the specified <paramref name="criteria"/> expression.
@@ -65,7 +62,7 @@ public interface IMongoQuery<TEntity, in TKey>
     /// <returns>
     /// An instance of TEnity that matches the criteria if found, otherwise null.
     /// </returns>
-    Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
+    Task<TEntity?> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
 
 
     /// <summary>
@@ -81,7 +78,7 @@ public interface IMongoQuery<TEntity, in TKey>
     /// <param name="criteria">The criteria expression.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
 
 
     /// <summary>
@@ -94,7 +91,7 @@ public interface IMongoQuery<TEntity, in TKey>
     /// Gets the number of entities in the collection.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>The number of entities in the data store.</returns>
     Task<long> CountAsync(CancellationToken cancellationToken = default);
 
 
@@ -109,6 +106,6 @@ public interface IMongoQuery<TEntity, in TKey>
     /// </summary>
     /// <param name="criteria">The criteria expression.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>The number of entities in the data store.</returns>
     Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
 }

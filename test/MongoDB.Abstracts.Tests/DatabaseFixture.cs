@@ -14,15 +14,7 @@ public class DatabaseFixture : TestApplicationFixture
 
         var services = builder.Services;
 
-        services.AddSingleton(sp =>
-        {
-            var configuration = sp.GetRequiredService<IConfiguration>();
-            var connectionString = configuration.GetConnectionString("MongoUnitTest");
-            return MongoFactory.GetDatabaseFromConnectionString(connectionString);
-        });
-
-        services.AddSingleton(typeof(IMongoEntityQuery<>), typeof(MongoEntityQuery<>));
-        services.AddSingleton(typeof(IMongoEntityRepository<>), typeof(MongoEntityRepository<>));
+        services.AddMongoDB("MongoUnitTest");
 
         services.AddMongoDBAbstractsTests();
     }

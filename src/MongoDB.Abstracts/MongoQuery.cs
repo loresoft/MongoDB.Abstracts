@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
+// Ignore Spelling: Mongo
+
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 using MongoDB.Driver;
 
@@ -38,7 +35,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
 
 
     /// <inheritdoc/>
-    public TEntity Find(TKey key)
+    public TEntity? Find(TKey key)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
@@ -51,20 +48,23 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     }
 
     /// <inheritdoc/>
-    public Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> FindAsync(TKey key, CancellationToken cancellationToken = default)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
 
         var filter = KeyExpression(key);
 
-        return Collection
+        var result = await Collection
             .Find(filter)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return result;
     }
 
     /// <inheritdoc/>
-    public TEntity FindOne(Expression<Func<TEntity, bool>> criteria)
+    public TEntity? FindOne(Expression<Func<TEntity, bool>> criteria)
     {
         if (criteria == null)
             throw new ArgumentNullException(nameof(criteria));
@@ -75,14 +75,17 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     }
 
     /// <inheritdoc/>
-    public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
     {
         if (criteria == null)
             throw new ArgumentNullException(nameof(criteria));
 
-        return Collection
+        var result = await Collection
             .Find(criteria)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return result;
     }
 
     /// <inheritdoc/>
@@ -97,11 +100,14 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     }
 
     /// <inheritdoc/>
-    public Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
     {
-        return Collection
+        var results = await Collection
             .Find(criteria)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return results;
     }
 
 

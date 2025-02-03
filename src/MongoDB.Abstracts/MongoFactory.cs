@@ -1,4 +1,4 @@
-using System;
+// Ignore Spelling: Mongo
 
 using MongoDB.Driver;
 
@@ -16,7 +16,7 @@ public static class MongoFactory
     /// <returns>An instance of <see cref="IMongoDatabase"/>.</returns>
     public static IMongoDatabase GetDatabaseFromConnectionString(string connectionString)
     {
-        if (connectionString == null)
+        if (connectionString is null)
             throw new ArgumentNullException(nameof(connectionString));
 
         var mongoUrl = new MongoUrl(connectionString);
@@ -33,7 +33,7 @@ public static class MongoFactory
     /// </returns>
     public static IMongoDatabase GetDatabaseFromMongoUrl(MongoUrl mongoUrl)
     {
-        if (mongoUrl == null)
+        if (mongoUrl is null)
             throw new ArgumentNullException(nameof(mongoUrl));
 
         var client = new MongoClient(mongoUrl);

@@ -1,4 +1,4 @@
-using System;
+// Ignore Spelling: Mongo
 
 namespace MongoDB.Abstracts;
 

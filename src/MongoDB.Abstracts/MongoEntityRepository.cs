@@ -1,4 +1,5 @@
-using System;
+// Ignore Spelling: Mongo
+
 using System.Linq.Expressions;
 
 using MongoDB.Driver;

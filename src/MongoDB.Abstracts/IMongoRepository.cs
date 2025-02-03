@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
+// Ignore Spelling: Mongo
+
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MongoDB.Abstracts;
 

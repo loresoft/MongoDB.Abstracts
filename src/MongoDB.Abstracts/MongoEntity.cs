@@ -1,4 +1,4 @@
-using System;
+// Ignore Spelling: Mongo
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -15,13 +15,13 @@ public abstract class MongoEntity : IMongoEntity
     /// <inheritdoc/>
     [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
     /// <inheritdoc/>
     [BsonRepresentation(BsonType.String)]
-    public DateTimeOffset Created { get; set; }
+    public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <inheritdoc/>
     [BsonRepresentation(BsonType.String)]
-    public DateTimeOffset Updated { get; set; }
+    public DateTimeOffset Updated { get; set; } = DateTimeOffset.UtcNow;
 }
