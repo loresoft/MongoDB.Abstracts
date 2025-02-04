@@ -30,11 +30,7 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(nameOrConnectionString));
 
 
-        services.TryAddSingleton(sp =>
-        {
-            var connectionString = ResolveConnectionString(sp, nameOrConnectionString);
-            return MongoFactory.GetDatabaseFromConnectionString(connectionString);
-        });
+        services.AddMongoDatabase(nameOrConnectionString);
 
         services.TryAddSingleton(typeof(IMongoEntityQuery<>), typeof(MongoEntityQuery<>));
         services.TryAddSingleton(typeof(IMongoEntityRepository<>), typeof(MongoEntityRepository<>));
@@ -60,6 +56,58 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(nameOrConnectionString));
 
 
+        services.AddMongoDatabase<TDiscriminator>(nameOrConnectionString);
+
+        services.TryAddSingleton(typeof(IMongoEntityQuery<,>), typeof(MongoEntityQuery<,>));
+        services.TryAddSingleton(typeof(IMongoEntityRepository<,>), typeof(MongoEntityRepository<,>));
+
+        return services;
+    }
+
+
+    /// <summary>
+    /// Adds the MongoDB database services with the specified connection string and service key.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+    /// <param name="nameOrConnectionString">The connection string or the name of connection string located in the application configuration.</param>
+    /// <returns>
+    /// The same service collection so that multiple calls can be chained.
+    /// </returns>
+    public static IServiceCollection AddMongoDatabase(this IServiceCollection services, string nameOrConnectionString)
+    {
+        if (services is null)
+            throw new ArgumentNullException(nameof(services));
+
+        if (nameOrConnectionString is null)
+            throw new ArgumentNullException(nameof(nameOrConnectionString));
+
+        services.TryAddSingleton(sp =>
+        {
+            var connectionString = ResolveConnectionString(sp, nameOrConnectionString);
+            return MongoFactory.GetDatabaseFromConnectionString(connectionString);
+        });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds the MongoDB database services with the specified connection string using the <typeparamref name="TDiscriminator"/> to support typed registration
+    /// </summary>
+    /// <typeparam name="TDiscriminator">The type of the connection discriminator.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+    /// <param name="nameOrConnectionString">The connection string or the name of connection string located in the application configuration.</param>
+    /// <returns>
+    /// The same service collection so that multiple calls can be chained.
+    /// </returns>
+    public static IServiceCollection AddMongoDatabase<TDiscriminator>(this IServiceCollection services, string nameOrConnectionString)
+    {
+        if (services is null)
+            throw new ArgumentNullException(nameof(services));
+
+        if (nameOrConnectionString is null)
+            throw new ArgumentNullException(nameof(nameOrConnectionString));
+
+
         services.TryAddSingleton(sp =>
         {
             var connectionString = ResolveConnectionString(sp, nameOrConnectionString);
@@ -67,9 +115,6 @@ public static class ServiceCollectionExtensions
 
             return new MongoDiscriminator<TDiscriminator>(database);
         });
-
-        services.TryAddSingleton(typeof(IMongoEntityQuery<,>), typeof(MongoEntityQuery<,>));
-        services.TryAddSingleton(typeof(IMongoEntityRepository<,>), typeof(MongoEntityRepository<,>));
 
         return services;
     }
@@ -103,6 +148,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+
     private static string ResolveConnectionString(IServiceProvider serviceProvider, string nameOrConnectionString)
     {
         var isConnectionString = nameOrConnectionString.IndexOfAny([';', '=', ':', '/']) > 0;
@@ -123,6 +169,5 @@ public static class ServiceCollectionExtensions
 
         return nameOrConnectionString;
     }
-
 }
 
