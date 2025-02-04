@@ -7,7 +7,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// A base <c>class</c> for a MongoDB Entity
+/// A base <see langword="class"/> for a MongoDB Entity
 /// </summary>
 [BsonIgnoreExtraElements(true, Inherited = true)]
 public abstract class MongoEntity : IMongoEntity

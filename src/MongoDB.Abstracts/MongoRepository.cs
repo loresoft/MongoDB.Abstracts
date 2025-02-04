@@ -7,7 +7,7 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// A MongoDB data repository base class.
+/// A MongoDB data repository base <see langword="class"/>.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TKey">The type of the key.</typeparam>
@@ -26,7 +26,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public TEntity Insert(TEntity entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         BeforeInsert(entity);
@@ -38,7 +38,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         BeforeInsert(entity);
@@ -54,7 +54,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public void InsertBatch(IEnumerable<TEntity> entities)
     {
-        if (entities == null)
+        if (entities is null)
             throw new ArgumentNullException(nameof(entities));
 
         var list = entities.ToList();
@@ -67,7 +67,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public TEntity Update(TEntity entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         BeforeUpdate(entity);
@@ -84,7 +84,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         BeforeUpdate(entity);
@@ -105,7 +105,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public TEntity Upsert(TEntity entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         BeforeUpdate(entity);
@@ -122,7 +122,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<TEntity> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         BeforeUpdate(entity);
@@ -142,7 +142,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public long Delete(TKey id)
     {
-        if (id == null)
+        if (id is null)
             throw new ArgumentNullException(nameof(id));
 
         var filter = KeyExpression(id);
@@ -155,7 +155,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<long> DeleteAsync(TKey id, CancellationToken cancellationToken = default)
     {
-        if (id == null)
+        if (id is null)
             throw new ArgumentNullException(nameof(id));
 
         var filter = KeyExpression(id);
@@ -171,7 +171,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public long Delete(TEntity entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         var key = EntityKey(entity);
@@ -182,7 +182,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<long> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         var key = EntityKey(entity);
@@ -194,7 +194,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public long DeleteAll(Expression<Func<TEntity, bool>> criteria)
     {
-        if (criteria == null)
+        if (criteria is null)
             throw new ArgumentNullException(nameof(criteria));
 
         var result = Collection.DeleteMany(criteria);
@@ -205,7 +205,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
     {
-        if (criteria == null)
+        if (criteria is null)
             throw new ArgumentNullException(nameof(criteria));
 
         var result = await Collection
@@ -223,7 +223,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     protected virtual void BeforeInsert(TEntity entity)
     {
         var mongoEntity = entity as IMongoEntity;
-        if (mongoEntity == null)
+        if (mongoEntity is null)
             return;
 
         mongoEntity.Created = DateTimeOffset.UtcNow;
@@ -237,7 +237,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     protected virtual void BeforeUpdate(TEntity entity)
     {
         var mongoEntity = entity as IMongoEntity;
-        if (mongoEntity == null)
+        if (mongoEntity is null)
             return;
 
         if (mongoEntity.Created == default)

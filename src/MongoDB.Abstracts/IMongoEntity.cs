@@ -3,7 +3,7 @@
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// An <c>interface</c> for a MongoDB Entity
+/// An <see langword="interface"/> for a MongoDB Entity
 /// </summary>
 public interface IMongoEntity
 {

@@ -55,6 +55,60 @@ services.AddMongoRepository("UnitTesting");
 }
 ```
 
+#### Discriminators
+
+Register with discriminator type for support for multiple connections.  This is a similar concept to dependency injection with keyed services.
+
+
+Simple types used to discriminate connections
+
+```c#
+public readonly struct ProductsConnection;
+public readonly struct InventoryConnection;
+```
+
+Register the MongoDB connections using the discriminators
+
+```c#
+services.AddMongoRepository<ProductsConnection>("ProductsConnection");
+services.AddMongoRepository<InventoryConnection>("InventoryConnection");
+```
+
+Connection string in appsettings.json
+
+```json
+{
+  "ConnectionStrings": {
+    "ProductsConnection": "mongodb://localhost:27017/Products",
+    "InventoryConnection": "mongodb://localhost:27017/Inventory"
+  }
+}
+```
+
+Inject into constructor
+
+```c#
+public class ProductService
+{
+    private readonly IMongoEntityRepository<ProductsConnection, Product> _repository;
+
+    public ProductService(IMongoEntityRepository<ProductsConnection, Product> repository)
+    {
+        _repository = repository;
+    }
+}
+
+public class InventoryService
+{
+    private readonly IMongoEntityRepository<InventoryConnection, Inventory> _repository;
+
+    public InventoryService(IMongoEntityRepository<InventoryConnection, Inventory> repository)
+    {
+        _repository = repository;
+    }
+}
+```
+
 ### Usage
 
 Find an entity by key
@@ -135,3 +189,42 @@ var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
 var count = await roleRepo.DeleteAsync("67a0dc52fa5ebe49f293a374");
 ```
 
+### Overrides
+
+Create a custom repository
+
+```c#
+public class UserRepository : MongoEntityRepository<Models.User>
+{
+    public UserRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
+    {
+    }
+
+    protected override void BeforeInsert(Models.User entity)
+    {
+        base.BeforeInsert(entity);
+
+        entity.EmailLower = entity.Email?.ToLowerInvariant();
+    }
+
+    protected override void BeforeUpdate(Models.User entity)
+    {
+        base.BeforeUpdate(entity);
+
+        entity.EmailLower = entity.Email?.ToLowerInvariant();
+    }
+
+    protected override void EnsureIndexes(IMongoCollection<Models.User> mongoCollection)
+    {
+        base.EnsureIndexes(mongoCollection);
+
+        mongoCollection.Indexes.CreateOne(
+            new CreateIndexModel<Models.User>(
+                Builders<Models.User>.IndexKeys.Ascending(s => s.EmailLower),
+                new CreateIndexOptions { Unique = true }
+            )
+        );
+    }
+
+}
+```

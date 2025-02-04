@@ -14,7 +14,7 @@ public class MongoDiscriminator<TDiscriminator>
     /// Initializes a new instance of the <see cref="MongoDiscriminator{TDiscriminator}"/> class.
     /// </summary>
     /// <param name="mongoDatabase">The mongo database.</param>
-    /// <exception cref="System.ArgumentNullException">mongoDatabase</exception>
+    /// <exception cref="System.ArgumentNullException">mongoDatabase is null</exception>
     public MongoDiscriminator(IMongoDatabase mongoDatabase)
     {
         MongoDatabase = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));

@@ -7,7 +7,7 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// An <c>interface</c> for common MongoDB query operations.
+/// An <see langword="interface"/> for common MongoDB query operations.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TKey">The type of the key.</typeparam>

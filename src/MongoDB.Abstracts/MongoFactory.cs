@@ -5,7 +5,7 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// A helper class for getting MongoDB database connection.
+/// A helper <see langword="class"/> for getting MongoDB database connection.
 /// </summary>
 public static class MongoFactory
 {

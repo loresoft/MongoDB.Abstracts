@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// An <c>interface</c> for common MongoDB data operations.
+/// An <see langword="interface"/> for common MongoDB data operations.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TKey">The type of the key.</typeparam>

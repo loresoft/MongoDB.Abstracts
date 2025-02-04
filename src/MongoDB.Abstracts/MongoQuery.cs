@@ -8,7 +8,7 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// A MongoDB data query base class.
+/// A MongoDB data query base <see langword="class"/>.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TKey">The type of the key.</typeparam>
@@ -37,7 +37,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public TEntity? Find(TKey key)
     {
-        if (key == null)
+        if (key is null)
             throw new ArgumentNullException(nameof(key));
 
         var filter = KeyExpression(key);
@@ -50,7 +50,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<TEntity?> FindAsync(TKey key, CancellationToken cancellationToken = default)
     {
-        if (key == null)
+        if (key is null)
             throw new ArgumentNullException(nameof(key));
 
         var filter = KeyExpression(key);
@@ -66,7 +66,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public TEntity? FindOne(Expression<Func<TEntity, bool>> criteria)
     {
-        if (criteria == null)
+        if (criteria is null)
             throw new ArgumentNullException(nameof(criteria));
 
         return Collection
@@ -77,7 +77,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public async Task<TEntity?> FindOneAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default)
     {
-        if (criteria == null)
+        if (criteria is null)
             throw new ArgumentNullException(nameof(criteria));
 
         var result = await Collection
@@ -91,7 +91,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// <inheritdoc/>
     public IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>> criteria)
     {
-        if (criteria == null)
+        if (criteria is null)
             throw new ArgumentNullException(nameof(criteria));
 
         return Collection
