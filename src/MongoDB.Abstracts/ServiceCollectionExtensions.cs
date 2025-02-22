@@ -149,13 +149,20 @@ public static class ServiceCollectionExtensions
     }
 
 
-    private static string ResolveConnectionString(IServiceProvider serviceProvider, string nameOrConnectionString)
+    /// <summary>
+    /// Resolve the connection string from the specified <paramref name="nameOrConnectionString"/>.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <param name="nameOrConnectionString">The connection string or the name of connection string located in the application config.</param>
+    /// <returns>The resolved connection string</returns>
+    /// <exception cref="System.ArgumentNullException">The service provider is null.</exception>
+    public static string ResolveConnectionString(this IServiceProvider services, string nameOrConnectionString)
     {
         var isConnectionString = nameOrConnectionString.IndexOfAny([';', '=', ':', '/']) > 0;
         if (isConnectionString)
             return nameOrConnectionString;
 
-        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        var configuration = services.GetRequiredService<IConfiguration>();
 
         // first try connection strings section
         var connectionString = configuration.GetConnectionString(nameOrConnectionString);
@@ -170,4 +177,3 @@ public static class ServiceCollectionExtensions
         return nameOrConnectionString;
     }
 }
-
