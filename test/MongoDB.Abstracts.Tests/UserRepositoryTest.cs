@@ -10,11 +10,8 @@ using MongoDB.Bson;
 
 namespace MongoDB.Abstracts.Tests;
 
-public class UserRepositoryTest : DatabaseTestBase
+public class UserRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestBase(databaseFixture)
 {
-    public UserRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
-    {
-    }
 
     [Fact]
     public async Task FullTestAsync()

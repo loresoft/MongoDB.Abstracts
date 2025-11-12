@@ -11,11 +11,8 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts.Tests;
 
 
-public class EntryRepositoryTest : DatabaseTestBase
+public class EntryRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestBase(databaseFixture)
 {
-    public EntryRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
-    {
-    }
 
     [Fact]
     public void ResolveServices()

@@ -7,11 +7,8 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts.Tests;
 
 
-public class DependencyInjectionTest : DatabaseTestBase
+public class DependencyInjectionTest(DatabaseFixture databaseFixture) : DatabaseTestBase(databaseFixture)
 {
-    public DependencyInjectionTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
-    {
-    }
 
     [Fact]
     public void ResolveMongoDatabase()

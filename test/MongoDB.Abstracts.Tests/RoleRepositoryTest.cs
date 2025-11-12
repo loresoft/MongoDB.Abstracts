@@ -10,12 +10,8 @@ using MongoDB.Bson;
 namespace MongoDB.Abstracts.Tests;
 
 
-public class RoleRepositoryTest : DatabaseTestBase
+public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestBase(databaseFixture)
 {
-    public RoleRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
-    {
-
-    }
 
     [Fact]
     public async Task CreateRole()

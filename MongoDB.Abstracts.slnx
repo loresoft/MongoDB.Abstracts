@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Build/">
+    <File Path=".github/workflows/dotnet.yml" />
+    <File Path="coverlet.runsettings" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+  <Project Path="src/MongoDB.Abstracts/MongoDB.Abstracts.csproj" />
+  <Project Path="test/MongoDB.Abstracts.Tests/MongoDB.Abstracts.Tests.csproj" />
+</Solution>

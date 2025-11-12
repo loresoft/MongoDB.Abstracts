@@ -9,11 +9,8 @@ using MongoDB.Bson;
 
 namespace MongoDB.Abstracts.Tests;
 
-public class ItemRepositoryTest : DatabaseTestBase
+public class ItemRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestBase(databaseFixture)
 {
-    public ItemRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
-    {
-    }
 
     [Fact]
     public async Task FullTestAsync()

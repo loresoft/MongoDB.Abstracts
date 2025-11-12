@@ -8,11 +8,8 @@ using MongoDB.Bson;
 
 namespace MongoDB.Abstracts.Tests;
 
-public class TemplateRepositoryTest : DatabaseTestBase
+public class TemplateRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestBase(databaseFixture)
 {
-    public TemplateRepositoryTest(ITestOutputHelper output, DatabaseFixture databaseFixture) : base(output, databaseFixture)
-    {
-    }
 
     [Fact]
     public async Task FullTestAsync()
