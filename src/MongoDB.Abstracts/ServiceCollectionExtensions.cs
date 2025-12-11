@@ -275,12 +275,12 @@ public static class ServiceCollectionExtensions
         // first try connection strings section
         var connectionString = configuration.GetConnectionString(nameOrConnectionString);
         if (!string.IsNullOrEmpty(connectionString))
-            return connectionString;
+            return connectionString!;
 
         // next try root collection
         connectionString = configuration[nameOrConnectionString];
         if (!string.IsNullOrEmpty(connectionString))
-            return connectionString;
+            return connectionString!;
 
         return nameOrConnectionString;
     }
