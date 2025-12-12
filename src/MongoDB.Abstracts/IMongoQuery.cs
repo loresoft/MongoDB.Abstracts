@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 using System.Linq.Expressions;
 
 using MongoDB.Driver;
@@ -205,3 +203,50 @@ public interface IMongoQuery<TEntity, in TKey>
     /// </remarks>
     Task<long> CountAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// Defines a contract for MongoDB query operations with connection discrimination support.
+/// </summary>
+/// <typeparam name="TDiscriminator">The type used to discriminate between different MongoDB connections or contexts. This type serves as a marker to distinguish between multiple registrations of the same entity type.</typeparam>
+/// <typeparam name="TEntity">The type of the MongoDB entity to query. Must be a reference type.</typeparam>
+/// <typeparam name="TKey">The type of the entity's primary key identifier.</typeparam>
+/// <remarks>
+/// <para>
+/// This interface extends <see cref="IMongoQuery{TEntity, TKey}"/> to support scenarios where multiple
+/// MongoDB connections, database contexts, or data sources need to be distinguished using a discriminator type.
+/// This is particularly useful in multi-tenant applications, multi-database scenarios, or when working with
+/// different connection strings for the same entity type.
+/// </para>
+/// <para>
+/// The discriminator type parameter acts as a compile-time marker that allows dependency injection containers
+/// to register and resolve multiple instances of query services for the same entity type but different contexts.
+/// Common discriminator types include enums, marker classes, or string constants wrapped in types.
+/// </para>
+/// <para>
+/// This interface inherits all query operations from <see cref="IMongoQuery{TEntity, TKey}"/> and does not
+/// add additional members. The discriminator only affects service registration and resolution.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code>
+/// // Using an enum as discriminator for different database contexts
+/// public enum DatabaseContext { Primary, Secondary, Archive }
+///
+/// // Register different instances for the same entity type
+/// services.AddScoped&lt;IMongoQuery&lt;DatabaseContext.Primary, User, string&gt;&gt;, UserQuery&gt;();
+/// services.AddScoped&lt;IMongoQuery&lt;DatabaseContext.Secondary, User, string&gt;&gt;, UserQuery&gt;();
+///
+/// // Resolve specific instance in a controller
+/// public class UserController : Controller
+/// {
+///     private readonly IMongoQuery&lt;DatabaseContext.Primary, User, string&gt; _primaryQuery;
+///
+///     public UserController(IMongoQuery&lt;DatabaseContext.Primary, User, string&gt; primaryQuery)
+///     {
+///         _primaryQuery = primaryQuery;
+///     }
+/// }
+/// </code>
+/// </example>
+public interface IMongoQuery<TDiscriminator, TEntity, TKey> : IMongoQuery<TEntity, TKey>
+    where TEntity : class;

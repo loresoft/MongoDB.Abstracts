@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 using System.Linq.Expressions;
 
 namespace MongoDB.Abstracts;
@@ -286,3 +284,65 @@ public interface IMongoRepository<TEntity, in TKey> : IMongoQuery<TEntity, TKey>
     /// </remarks>
     Task<long> DeleteAllAsync(Expression<Func<TEntity, bool>> criteria, CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// Defines a contract for MongoDB data operations with connection discrimination support.
+/// </summary>
+/// <typeparam name="TDiscriminator">The type used to discriminate between different MongoDB connections or database contexts. This type serves as a marker to distinguish between multiple registrations of the same entity type.</typeparam>
+/// <typeparam name="TEntity">The type of the MongoDB entity to manage. Must be a reference type.</typeparam>
+/// <typeparam name="TKey">The type of the entity's primary key identifier.</typeparam>
+/// <remarks>
+/// <para>
+/// This interface extends <see cref="IMongoRepository{TEntity, TKey}"/> to support scenarios where multiple
+/// MongoDB connections, database contexts, or data sources need to be distinguished using a discriminator type.
+/// This is particularly useful in multi-tenant applications, microservices architectures, sharded database scenarios,
+/// or when working with multiple databases that contain the same entity types but in different contexts.
+/// </para>
+/// <para>
+/// The discriminator type parameter acts as a compile-time marker that allows dependency injection containers
+/// to register and resolve multiple instances of repository services for the same entity type but different contexts.
+/// Common discriminator types include enums, marker classes, or string constants wrapped in types that
+/// represent different connection contexts (e.g., read/write replicas, tenant identifiers, regional databases).
+/// </para>
+/// <para>
+/// This interface inherits all CRUD operations from <see cref="IMongoRepository{TEntity, TKey}"/> and does not
+/// add additional members. The discriminator only affects service registration and resolution, providing
+/// type-safe dependency injection while maintaining clean separation between different data contexts
+/// without requiring complex factory patterns or service locators.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code>
+/// // Using an enum as discriminator for read/write database separation
+/// public enum DatabaseRole { Primary, ReadReplica, Archive }
+///
+/// // Register different repository instances for the same entity type
+/// services.AddScoped&lt;IMongoRepository&lt;DatabaseRole.Primary, User, string&gt;&gt;(sp =&gt;
+///     new MongoRepository&lt;User, string&gt;(primaryConnectionString));
+/// services.AddScoped&lt;IMongoRepository&lt;DatabaseRole.ReadReplica, User, string&gt;&gt;(sp =&gt;
+///     new MongoRepository&lt;User, string&gt;(replicaConnectionString));
+///
+/// // Inject and use specific repository instances
+/// public class UserService
+/// {
+///     private readonly IMongoRepository&lt;DatabaseRole.Primary, User, string&gt; _writeRepository;
+///     private readonly IMongoRepository&lt;DatabaseRole.ReadReplica, User, string&gt; _readRepository;
+///
+///     public UserService(
+///         IMongoRepository&lt;DatabaseRole.Primary, User, string&gt; writeRepository,
+///         IMongoRepository&lt;DatabaseRole.ReadReplica, User, string&gt; readRepository)
+///     {
+///         _writeRepository = writeRepository;
+///         _readRepository = readRepository;
+///     }
+///
+///     public async Task&lt;User&gt; CreateUserAsync(User user) =&gt;
+///         await _writeRepository.InsertAsync(user);
+///
+///     public async Task&lt;User?&gt; GetUserAsync(string id) =&gt;
+///         await _readRepository.FindAsync(id);
+/// }
+/// </code>
+/// </example>
+public interface IMongoRepository<TDiscriminator, TEntity, TKey> : IMongoRepository<TEntity, TKey>
+    where TEntity : class;

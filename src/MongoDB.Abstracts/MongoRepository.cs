@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 using System.Linq.Expressions;
 
 using MongoDB.Driver;
@@ -13,7 +11,7 @@ namespace MongoDB.Abstracts;
 /// <typeparam name="TKey">The type of the entity's primary key identifier.</typeparam>
 /// <remarks>
 /// <para>
-/// This abstract class extends <see cref="MongoQuery{TEntity, TKey}"/> to provide a full repository pattern
+/// This class extends <see cref="MongoQuery{TEntity, TKey}"/> to provide a full repository pattern
 /// implementation for MongoDB operations. It includes all CRUD operations (Create, Read, Update, Delete)
 /// with built-in support for automatic audit timestamp management and extensible hooks for custom behavior.
 /// </para>
@@ -27,8 +25,8 @@ namespace MongoDB.Abstracts;
 /// variants of all operations, with async methods being preferred for better scalability.
 /// </para>
 /// </remarks>
-public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>, IMongoRepository<TEntity, TKey>
-    where TEntity : class
+public class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>, IMongoRepository<TEntity, TKey>
+    where TEntity : class, IMongoIdentifier<TKey>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MongoRepository{TEntity, TKey}"/> class with the specified MongoDB database.
@@ -45,7 +43,7 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
     /// write concerns, and other MongoDB-specific settings before being passed to this constructor.
     /// </para>
     /// </remarks>
-    protected MongoRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
+    public MongoRepository(IMongoDatabase mongoDatabase) : base(mongoDatabase)
     {
 
     }
@@ -513,3 +511,28 @@ public abstract class MongoRepository<TEntity, TKey> : MongoQuery<TEntity, TKey>
         mongoEntity.Updated = DateTimeOffset.UtcNow;
     }
 }
+
+/// <summary>
+/// Provides a MongoDB repository implementation with connection discrimination support for multi-database scenarios.
+/// </summary>
+/// <typeparam name="TDiscriminator">The type used to discriminate between different MongoDB database connections. This type serves as a marker to distinguish between multiple registrations of the same entity type.</typeparam>
+/// <typeparam name="TEntity">The type of the MongoDB entity to manage. Must be a reference type that implements <see cref="IMongoIdentifier{TKey}"/>.</typeparam>
+/// <typeparam name="TKey">The type of the entity's primary key identifier.</typeparam>
+/// <remarks>
+/// <para>
+/// This class extends <see cref="MongoRepository{TEntity, TKey}"/> to support scenarios where multiple MongoDB
+/// database connections need to be distinguished using discriminator types. It leverages the
+/// <see cref="MongoDiscriminator{TDiscriminator}"/> pattern to provide type-safe dependency injection
+/// for complex application architectures requiring multiple database contexts.
+/// </para>
+/// <para>
+/// The discriminator-based approach enables the same entity types to be used across different database
+/// contexts while maintaining clean separation, type safety, and clear dependency injection patterns.
+/// This is particularly valuable in scenarios such as multi-tenant applications with tenant-specific databases,
+/// microservices architectures with domain-separated data stores, read/write replica separation for
+/// performance optimization, or regional database distribution for compliance and latency requirements.
+/// </para>
+/// </remarks>
+public class MongoRepository<TDiscriminator, TEntity, TKey>(MongoDiscriminator<TDiscriminator> mongoDiscriminator)
+    : MongoRepository<TEntity, TKey>(mongoDiscriminator.MongoDatabase), IMongoRepository<TDiscriminator, TEntity, TKey>
+    where TEntity : class, IMongoIdentifier<TKey>;

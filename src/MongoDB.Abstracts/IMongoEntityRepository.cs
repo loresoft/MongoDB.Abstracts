@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 namespace MongoDB.Abstracts;
 
 /// <summary>

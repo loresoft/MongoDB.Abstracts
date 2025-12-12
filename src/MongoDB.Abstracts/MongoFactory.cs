@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 using MongoDB.Driver;
 
 namespace MongoDB.Abstracts;

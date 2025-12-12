@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -8,13 +6,13 @@ using MongoDB.Driver;
 namespace MongoDB.Abstracts;
 
 /// <summary>
-/// Provides a base implementation for MongoDB query operations with lazy collection initialization and extensible design.
+/// Provides an implementation for MongoDB query operations with lazy collection initialization and extensible design.
 /// </summary>
 /// <typeparam name="TEntity">The type of the MongoDB entity to query.</typeparam>
 /// <typeparam name="TKey">The type of the entity's primary key identifier.</typeparam>
 /// <remarks>
 /// <para>
-/// This abstract class implements the <see cref="IMongoQuery{TEntity, TKey}"/> interface and provides a complete
+/// This class implements the <see cref="IMongoQuery{TEntity, TKey}"/> interface and provides a complete
 /// foundation for MongoDB query operations. It includes lazy collection initialization, proper async/await patterns,
 /// and extensible hooks for customizing collection creation and index management.
 /// </para>
@@ -22,13 +20,9 @@ namespace MongoDB.Abstracts;
 /// The class uses lazy initialization for the MongoDB collection to defer database connection until the first
 /// query operation, improving application startup performance and allowing for dynamic configuration scenarios.
 /// </para>
-/// <para>
-/// Derived classes must implement abstract methods for key extraction and expression generation, enabling
-/// type-safe query operations while maintaining flexibility for different entity key strategies.
-/// </para>
 /// </remarks>
-public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
-    where TEntity : class
+public class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
+    where TEntity : class, IMongoIdentifier<TKey>
 {
     private readonly Lazy<IMongoCollection<TEntity>> _collection;
     private readonly IMongoDatabase _mongoDatabase;
@@ -48,7 +42,7 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// and other settings before being passed to this constructor.
     /// </para>
     /// </remarks>
-    protected MongoQuery(IMongoDatabase mongoDatabase)
+    public MongoQuery(IMongoDatabase mongoDatabase)
     {
         _mongoDatabase = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
         _collection = new Lazy<IMongoCollection<TEntity>>(CreateCollection);
@@ -297,7 +291,8 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// such as update and delete operations that work with entity instances.
     /// </para>
     /// </remarks>
-    protected abstract TKey EntityKey(TEntity entity);
+    protected virtual TKey EntityKey(TEntity entity)
+        => entity.Id;
 
     /// <summary>
     /// Creates a filter expression that matches entities with the specified key value.
@@ -314,7 +309,8 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
     /// ensuring type-safe and efficient key-based queries.
     /// </para>
     /// </remarks>
-    protected abstract Expression<Func<TEntity, bool>> KeyExpression(TKey key);
+    protected virtual Expression<Func<TEntity, bool>> KeyExpression(TKey key)
+        => entity => Equals(entity.Id, key);
 
     /// <summary>
     /// Determines the MongoDB collection name for the entity type.
@@ -407,3 +403,27 @@ public abstract class MongoQuery<TEntity, TKey> : IMongoQuery<TEntity, TKey>
 
     }
 }
+
+/// <summary>
+/// Provides a MongoDB query implementation with connection discrimination support for multi-database scenarios.
+/// </summary>
+/// <typeparam name="TDiscriminator">The type used to discriminate between different MongoDB database connections. This type serves as a marker to distinguish between multiple registrations of the same entity type.</typeparam>
+/// <typeparam name="TEntity">The type of the MongoDB entity to query. Must be a reference type that implements <see cref="IMongoIdentifier{TKey}"/>.</typeparam>
+/// <typeparam name="TKey">The type of the entity's primary key identifier.</typeparam>
+/// <remarks>
+/// <para>
+/// This class extends <see cref="MongoQuery{TEntity, TKey}"/> to support scenarios where multiple MongoDB
+/// database connections need to be distinguished using discriminator types. It leverages the
+/// <see cref="MongoDiscriminator{TDiscriminator}"/> pattern to provide type-safe dependency injection
+/// for multi-tenant applications, microservices architectures, or distributed database scenarios.
+/// </para>
+/// <para>
+/// The discriminator-based approach enables the same entity types to be used across different database
+/// contexts while maintaining clean separation and type safety. This is particularly useful in scenarios
+/// such as tenant-specific databases, read/write replica separation, regional database distribution,
+/// or domain-specific data contexts.
+/// </para>
+/// </remarks>
+public class MongoQuery<TDiscriminator, TEntity, TKey>(MongoDiscriminator<TDiscriminator> mongoDiscriminator)
+    : MongoQuery<TEntity, TKey>(mongoDiscriminator.MongoDatabase), IMongoQuery<TDiscriminator, TEntity, TKey>
+    where TEntity : class, IMongoIdentifier<TKey>;

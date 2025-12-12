@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 namespace MongoDB.Abstracts;
 
 /// <summary>
@@ -10,21 +8,8 @@ namespace MongoDB.Abstracts;
 /// identity and audit trail capabilities. All implementing entities will have
 /// an identifier and timestamps for creation and modification tracking.
 /// </remarks>
-public interface IMongoEntity
+public interface IMongoEntity : IMongoIdentifier<string>
 {
-    /// <summary>
-    /// Gets or sets the unique identifier for the MongoDB document.
-    /// </summary>
-    /// <value>
-    /// A string representing the unique identifier. In MongoDB, this typically
-    /// corresponds to the _id field and should be unique across the collection.
-    /// </value>
-    /// <remarks>
-    /// When using MongoDB.Driver, this property is commonly mapped to MongoDB's
-    /// ObjectId or can be a custom string identifier.
-    /// </remarks>
-    string Id { get; set; }
-
     /// <summary>
     /// Gets or sets the timestamp when the entity was initially created.
     /// </summary>

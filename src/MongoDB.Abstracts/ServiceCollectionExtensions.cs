@@ -1,5 +1,3 @@
-// Ignore Spelling: Mongo
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -66,6 +64,9 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton(typeof(IMongoEntityQuery<>), typeof(MongoEntityQuery<>));
         services.TryAddSingleton(typeof(IMongoEntityRepository<>), typeof(MongoEntityRepository<>));
 
+        services.TryAddSingleton(typeof(IMongoQuery<,>), typeof(MongoQuery<,>));
+        services.TryAddSingleton(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
+
         return services;
     }
 
@@ -107,6 +108,9 @@ public static class ServiceCollectionExtensions
 
         services.TryAddSingleton(typeof(IMongoEntityQuery<,>), typeof(MongoEntityQuery<,>));
         services.TryAddSingleton(typeof(IMongoEntityRepository<,>), typeof(MongoEntityRepository<,>));
+
+        services.TryAddSingleton(typeof(IMongoQuery<,,>), typeof(MongoQuery<,,>));
+        services.TryAddSingleton(typeof(IMongoRepository<,,>), typeof(MongoRepository<,,>));
 
         return services;
     }

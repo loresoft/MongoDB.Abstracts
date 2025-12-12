@@ -88,12 +88,34 @@ public class DependencyInjectionTest(DatabaseFixture databaseFixture) : Database
     }
 
     [Fact]
+    public void ResolveMongoRepositoryWithDiscriminator()
+    {
+        var mongoRepo = Services.GetRequiredService<IMongoRepository<DiscriminatorConnection, User, string>>();
+        mongoRepo.Should().NotBeNull();
+
+        var collection = mongoRepo.Collection;
+        collection.Should().NotBeNull();
+        collection.CollectionNamespace.FullName.Should().Be("DiscriminatorUnitTesting.User");
+    }
+
+    [Fact]
     public void ResolveMongoEntityQueryWithDiscriminator()
     {
         var mongoEntityRepo = Services.GetRequiredService<IMongoEntityQuery<DiscriminatorConnection, User>>();
         mongoEntityRepo.Should().NotBeNull();
 
         var collection = mongoEntityRepo.Collection;
+        collection.Should().NotBeNull();
+        collection.CollectionNamespace.FullName.Should().Be("DiscriminatorUnitTesting.User");
+    }
+
+    [Fact]
+    public void ResolveMongoQueryWithDiscriminator()
+    {
+        var mongoRepo = Services.GetRequiredService<IMongoQuery<DiscriminatorConnection, User, string>>();
+        mongoRepo.Should().NotBeNull();
+
+        var collection = mongoRepo.Collection;
         collection.Should().NotBeNull();
         collection.CollectionNamespace.FullName.Should().Be("DiscriminatorUnitTesting.User");
     }
