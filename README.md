@@ -75,6 +75,43 @@ services.AddMongoRepository("MyDatabase");
 }
 ```
 
+### Advanced Configuration
+
+#### Configure MongoDB Client Settings
+
+You can customize the MongoDB client settings, including logging configuration:
+
+```csharp
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver.Core.Configuration;
+
+services.AddMongoRepository(
+    nameOrConnectionString: "MyDatabase",
+    configuration: (provider, settings) =>
+    {
+        // Enable MongoDB driver logging
+        var loggerFactory = provider.GetService<ILoggerFactory>();
+        settings.LoggingSettings = new LoggingSettings(loggerFactory);
+        
+        // Configure other client settings
+        settings.ConnectTimeout = TimeSpan.FromSeconds(30);
+        settings.ServerSelectionTimeout = TimeSpan.FromSeconds(30);
+        settings.MaxConnectionPoolSize = 100;
+    }
+);
+```
+
+#### Specify Database Name
+
+Override the database name from the connection string:
+
+```csharp
+services.AddMongoRepository(
+    nameOrConnectionString: "mongodb://localhost:27017/DefaultDb",
+    databaseName: "ActualDatabase"
+);
+```
+
 ### Multi-Database Configuration with Discriminators
 
 For applications requiring multiple MongoDB connections, use discriminator types to distinguish between different database contexts:

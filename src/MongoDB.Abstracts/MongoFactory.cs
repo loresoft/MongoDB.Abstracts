@@ -85,8 +85,7 @@ public static class MongoFactory
             throw new ArgumentNullException(nameof(mongoUrl));
 
         var client = new MongoClient(mongoUrl);
-        var mongoDatabase = client.GetDatabase(mongoUrl.DatabaseName);
 
-        return mongoDatabase;
+        return client.GetDatabase(mongoUrl.DatabaseName);
     }
 }

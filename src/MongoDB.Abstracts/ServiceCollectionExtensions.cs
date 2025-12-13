@@ -13,7 +13,7 @@ namespace MongoDB.Abstracts;
 /// <para>
 /// This static class provides convenient extension methods for registering MongoDB-related services in dependency
 /// injection containers. It supports both simple single-database scenarios and complex multi-database scenarios
-/// using discriminator types for type-safe service resolution.
+/// using discriminator types or service keys for type-safe service resolution.
 /// </para>
 /// <para>
 /// The extension methods handle connection string resolution from configuration, database instance creation,
@@ -32,16 +32,19 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <param name="nameOrConnectionString">The MongoDB connection string or the name of a connection string located in the application configuration.</param>
+    /// <param name="databaseName">The name of the MongoDB database. If <see langword="null"/>, the database name from the connection string will be used.</param>
+    /// <param name="configuration">An optional action to configure the <see cref="MongoClientSettings"/> before creating the MongoDB client.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="nameOrConnectionString"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
     /// This method registers the core MongoDB repository and query services for applications using a single database.
-    /// It automatically configures <see cref="IMongoEntityQuery{TEntity}"/> and <see cref="IMongoEntityRepository{TEntity}"/>
+    /// It automatically configures <see cref="IMongoEntityQuery{TEntity}"/>, <see cref="IMongoEntityRepository{TEntity}"/>,
+    /// <see cref="IMongoQuery{TEntity, TKey}"/>, and <see cref="IMongoRepository{TEntity, TKey}"/>
     /// services using singleton lifetime for optimal performance.
     /// </para>
     /// <para>
-    /// The method delegates database registration to <see cref="AddMongoDatabase(IServiceCollection, string)"/> and then
+    /// The method delegates database registration to <see cref="AddMongoDatabase(IServiceCollection, string, string?, Action{IServiceProvider, MongoClientSettings}?)"/> and then
     /// registers the generic repository and query interfaces with their concrete implementations. This provides a
     /// complete MongoDB data access solution with minimal configuration effort.
     /// </para>
@@ -50,7 +53,11 @@ public static class ServiceCollectionExtensions
     /// providing flexibility for different deployment scenarios and configuration management approaches.
     /// </para>
     /// </remarks>
-    public static IServiceCollection AddMongoRepository(this IServiceCollection services, string nameOrConnectionString)
+    public static IServiceCollection AddMongoRepository(
+        this IServiceCollection services,
+        string nameOrConnectionString,
+        string? databaseName = null,
+        Action<IServiceProvider, MongoClientSettings>? configuration = null)
     {
         if (services is null)
             throw new ArgumentNullException(nameof(services));
@@ -59,7 +66,7 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(nameOrConnectionString));
 
 
-        services.AddMongoDatabase(nameOrConnectionString);
+        services.AddMongoDatabase(nameOrConnectionString, databaseName, configuration);
 
         services.TryAddSingleton(typeof(IMongoEntityQuery<>), typeof(MongoEntityQuery<>));
         services.TryAddSingleton(typeof(IMongoEntityRepository<>), typeof(MongoEntityRepository<>));
@@ -76,13 +83,16 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TDiscriminator">The type used to discriminate between different MongoDB database connections.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <param name="nameOrConnectionString">The MongoDB connection string or the name of a connection string located in the application configuration.</param>
+    /// <param name="databaseName">The name of the MongoDB database. If <see langword="null"/>, the database name from the connection string will be used.</param>
+    /// <param name="configuration">An optional action to configure the <see cref="MongoClientSettings"/> before creating the MongoDB client.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="nameOrConnectionString"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
     /// This method registers MongoDB repository and query services with discriminator support, enabling type-safe
     /// dependency injection for applications requiring multiple database connections. It configures
-    /// <see cref="IMongoEntityQuery{TDiscriminator, TEntity}"/> and <see cref="IMongoEntityRepository{TDiscriminator, TEntity}"/>
+    /// <see cref="IMongoEntityQuery{TDiscriminator, TEntity}"/>, <see cref="IMongoEntityRepository{TDiscriminator, TEntity}"/>,
+    /// <see cref="IMongoQuery{TDiscriminator, TEntity, TKey}"/>, and <see cref="IMongoRepository{TDiscriminator, TEntity, TKey}"/>
     /// services with singleton lifetime for optimal performance.
     /// </para>
     /// <para>
@@ -95,7 +105,11 @@ public static class ServiceCollectionExtensions
     /// providing the foundation for type-safe service resolution in complex application architectures.
     /// </para>
     /// </remarks>
-    public static IServiceCollection AddMongoRepository<TDiscriminator>(this IServiceCollection services, string nameOrConnectionString)
+    public static IServiceCollection AddMongoRepository<TDiscriminator>(
+        this IServiceCollection services,
+        string nameOrConnectionString,
+        string? databaseName = null,
+        Action<IServiceProvider, MongoClientSettings>? configuration = null)
     {
         if (services is null)
             throw new ArgumentNullException(nameof(services));
@@ -104,7 +118,7 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(nameOrConnectionString));
 
 
-        services.AddMongoDatabase<TDiscriminator>(nameOrConnectionString);
+        services.AddMongoDatabase<TDiscriminator>(nameOrConnectionString, databaseName, configuration);
 
         services.TryAddSingleton(typeof(IMongoEntityQuery<,>), typeof(MongoEntityQuery<,>));
         services.TryAddSingleton(typeof(IMongoEntityRepository<,>), typeof(MongoEntityRepository<,>));
@@ -115,30 +129,42 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+
     /// <summary>
     /// Registers a MongoDB database service with the dependency injection container for single-database scenarios.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <param name="nameOrConnectionString">The MongoDB connection string or the name of a connection string located in the application configuration.</param>
+    /// <param name="databaseName">The name of the MongoDB database. If <see langword="null"/>, the database name from the connection string will be used.</param>
+    /// <param name="configuration">An optional action to configure the <see cref="MongoClientSettings"/> before creating the MongoDB client.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="nameOrConnectionString"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
     /// This method registers an <see cref="IMongoDatabase"/> service as a singleton, providing a shared database
-    /// connection for all MongoDB operations in the application. The database instance is created using the
-    /// <see cref="MongoFactory"/> utility with proper connection string resolution.
+    /// connection for all MongoDB operations in the application. The database instance is created using a
+    /// factory that resolves the connection string and creates a <see cref="MongoClient"/> instance.
     /// </para>
     /// <para>
-    /// Connection string resolution is handled automatically, supporting both direct connection strings and
-    /// configuration-based lookup through the application's <see cref="IConfiguration"/> service. This provides
-    /// flexibility for different deployment scenarios and configuration management approaches.
+    /// Connection string resolution is handled automatically by <see cref="ResolveConnectionString(IServiceProvider, string)"/>,
+    /// supporting both direct connection strings and configuration-based lookup through the application's
+    /// <see cref="IConfiguration"/> service. This provides flexibility for different deployment scenarios and
+    /// configuration management approaches.
+    /// </para>
+    /// <para>
+    /// The optional <paramref name="configuration"/> action allows customization of the <see cref="MongoClientSettings"/>
+    /// before the client is created, enabling scenarios such as custom serialization, SSL configuration, or connection pooling settings.
     /// </para>
     /// <para>
     /// The singleton lifetime ensures optimal resource utilization and performance while maintaining thread safety
     /// for concurrent database operations across the application.
     /// </para>
     /// </remarks>
-    public static IServiceCollection AddMongoDatabase(this IServiceCollection services, string nameOrConnectionString)
+    public static IServiceCollection AddMongoDatabase(
+        this IServiceCollection services,
+        string nameOrConnectionString,
+        string? databaseName = null,
+        Action<IServiceProvider, MongoClientSettings>? configuration = null)
     {
         if (services is null)
             throw new ArgumentNullException(nameof(services));
@@ -149,7 +175,13 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton(sp =>
         {
             var connectionString = ResolveConnectionString(sp, nameOrConnectionString);
-            return MongoFactory.GetDatabaseFromConnectionString(connectionString);
+            var mongoUrl = new MongoUrl(connectionString);
+            var settings = MongoClientSettings.FromUrl(mongoUrl);
+
+            configuration?.Invoke(sp, settings);
+
+            var client = new MongoClient(settings);
+            return client.GetDatabase(databaseName ?? mongoUrl.DatabaseName);
         });
 
         return services;
@@ -161,6 +193,8 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TDiscriminator">The type used to discriminate between different MongoDB database connections.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <param name="nameOrConnectionString">The MongoDB connection string or the name of a connection string located in the application configuration.</param>
+    /// <param name="databaseName">The name of the MongoDB database. If <see langword="null"/>, the database name from the connection string will be used.</param>
+    /// <param name="configuration">An optional action to configure the <see cref="MongoClientSettings"/> before creating the MongoDB client.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="nameOrConnectionString"/> is <see langword="null"/>.</exception>
     /// <remarks>
@@ -175,11 +209,20 @@ public static class ServiceCollectionExtensions
     /// context, enabling clean separation of multi-tenant data, read/write replicas, or domain-specific databases.
     /// </para>
     /// <para>
-    /// Connection string resolution and database creation follow the same patterns as single-database scenarios,
-    /// with the additional discriminator wrapper providing the foundation for type-safe multi-connection support.
+    /// Connection string resolution follows the same pattern as single-database scenarios via
+    /// <see cref="ResolveConnectionString(IServiceProvider, string)"/>, and the optional <paramref name="configuration"/>
+    /// action allows customization of the <see cref="MongoClientSettings"/> before the client is created.
+    /// </para>
+    /// <para>
+    /// The discriminator wrapper provides the foundation for type-safe multi-connection support, allowing
+    /// services to depend on <c>MongoDiscriminator&lt;TDiscriminator&gt;</c> to receive the appropriate database instance.
     /// </para>
     /// </remarks>
-    public static IServiceCollection AddMongoDatabase<TDiscriminator>(this IServiceCollection services, string nameOrConnectionString)
+    public static IServiceCollection AddMongoDatabase<TDiscriminator>(
+        this IServiceCollection services,
+        string nameOrConnectionString,
+        string? databaseName = null,
+        Action<IServiceProvider, MongoClientSettings>? configuration = null)
     {
         if (services is null)
             throw new ArgumentNullException(nameof(services));
@@ -191,7 +234,13 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton(sp =>
         {
             var connectionString = ResolveConnectionString(sp, nameOrConnectionString);
-            var database = MongoFactory.GetDatabaseFromConnectionString(connectionString);
+            var mongoUrl = new MongoUrl(connectionString);
+            var settings = MongoClientSettings.FromUrl(mongoUrl);
+
+            configuration?.Invoke(sp, settings);
+
+            var client = new MongoClient(settings);
+            var database = client.GetDatabase(databaseName ?? mongoUrl.DatabaseName);
 
             return new MongoDiscriminator<TDiscriminator>(database);
         });
@@ -204,7 +253,9 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <param name="nameOrConnectionString">The MongoDB connection string or the name of a connection string located in the application configuration.</param>
-    /// <param name="serviceKey">The service key used for keyed service registration and resolution.</param>
+    /// <param name="serviceKey">The service key used for keyed service registration and resolution. Can be <see langword="null"/> for default registration.</param>
+    /// <param name="databaseName">The name of the MongoDB database. If <see langword="null"/>, the database name from the connection string will be used.</param>
+    /// <param name="configuration">An optional action to configure the <see cref="MongoClientSettings"/> before creating the MongoDB client.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="nameOrConnectionString"/> is <see langword="null"/>.</exception>
     /// <remarks>
@@ -220,11 +271,20 @@ public static class ServiceCollectionExtensions
     /// </para>
     /// <para>
     /// The service key can be any object type, providing flexibility for different keying strategies including
-    /// strings, enums, or custom key objects. Connection string resolution follows standard patterns with
-    /// automatic configuration lookup support.
+    /// strings, enums, or custom key objects. Connection string resolution follows standard patterns via
+    /// <see cref="ResolveConnectionString(IServiceProvider, string)"/> with automatic configuration lookup support.
+    /// </para>
+    /// <para>
+    /// The optional <paramref name="configuration"/> action allows customization of the <see cref="MongoClientSettings"/>
+    /// before the client is created, enabling advanced configuration scenarios.
     /// </para>
     /// </remarks>
-    public static IServiceCollection AddMongoDatabase(this IServiceCollection services, string nameOrConnectionString, object? serviceKey)
+    public static IServiceCollection AddKeyedMongoDatabase(
+        this IServiceCollection services,
+        string nameOrConnectionString,
+        object? serviceKey,
+        string? databaseName = null,
+        Action<IServiceProvider, MongoClientSettings>? configuration = null)
     {
         if (services is null)
             throw new ArgumentNullException(nameof(services));
@@ -234,15 +294,23 @@ public static class ServiceCollectionExtensions
 
         services.TryAddKeyedSingleton(
             serviceKey: serviceKey,
-            implementationFactory: (sp, key) =>
+            implementationFactory: (sp, _) =>
             {
                 var connectionString = ResolveConnectionString(sp, nameOrConnectionString);
-                return MongoFactory.GetDatabaseFromConnectionString(connectionString);
+
+                var mongoUrl = new MongoUrl(connectionString);
+                var settings = MongoClientSettings.FromUrl(mongoUrl);
+
+                configuration?.Invoke(sp, settings);
+
+                var client = new MongoClient(settings);
+                return client.GetDatabase(databaseName ?? mongoUrl.DatabaseName);
             }
         );
 
         return services;
     }
+
 
     /// <summary>
     /// Resolves a connection string from either a direct connection string or a configuration key name.
@@ -254,12 +322,13 @@ public static class ServiceCollectionExtensions
     /// <remarks>
     /// <para>
     /// This method provides intelligent connection string resolution by first attempting to detect if the provided
-    /// value is a direct connection string (by checking for common connection string characters) or a configuration key name.
+    /// value is a direct connection string (by checking for common connection string characters such as ';', '=', ':', or '/').
     /// If it appears to be a direct connection string, it is returned unchanged.
     /// </para>
     /// <para>
     /// For configuration-based resolution, the method first attempts to resolve the value from the standard
-    /// ConnectionStrings configuration section, then falls back to searching the root configuration collection.
+    /// <c>ConnectionStrings</c> configuration section using <c>IConfiguration.GetConnectionString(string)</c>,
+    /// then falls back to searching the root configuration collection using the indexer.
     /// This provides flexibility for different configuration organization approaches.
     /// </para>
     /// <para>
