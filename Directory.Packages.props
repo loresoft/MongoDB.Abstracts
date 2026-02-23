@@ -9,7 +9,7 @@
     <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="coverlet.collector" Version="8.0.0" />
     <PackageVersion Include="Injectio" Version="5.1.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.9" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.15" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
