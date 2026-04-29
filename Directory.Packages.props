@@ -12,7 +12,7 @@
     <PackageVersion Include="Meziantou.Analyzer" Version="3.0.56" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.7" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="MongoDB.Driver" Version="3.8.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
