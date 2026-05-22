@@ -11,4 +11,8 @@
     <PackageReference Include="MongoDB.Driver" />
   </ItemGroup>
 
+  <!--https://github.com/mongodb/mongo-csharp-driver/pull/1996-->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-6c8g-7p36-r338" />
+  </ItemGroup>
 </Project>
