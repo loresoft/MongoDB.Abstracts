@@ -27,12 +27,12 @@ public class ItemRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         repository.Should().NotBeNull();
 
         // create
-        var createResult = await repository.InsertAsync(item);
+        var createResult = await repository.InsertAsync(item, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(item.Id);
 
         // read
-        var readResult = await repository.FindAsync(item.Id);
+        var readResult = await repository.FindAsync(item.Id, Xunit.TestContext.Current.CancellationToken);
         readResult.Should().NotBeNull();
         readResult.Id.Should().Be(item.Id);
         readResult.OwnerId.Should().Be(item.OwnerId);
@@ -40,31 +40,31 @@ public class ItemRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         // update
         readResult.Name = "Big " + readResult.Name;
 
-        var updateResult = await repository.UpdateAsync(readResult);
+        var updateResult = await repository.UpdateAsync(readResult, Xunit.TestContext.Current.CancellationToken);
         updateResult.Should().NotBeNull();
         updateResult.Id.Should().Be(item.Id);
         updateResult.OwnerId.Should().Be(item.OwnerId);
 
         // query
-        var queryResult = await repository.FindOneAsync(r => r.Name.StartsWith("Big"));
+        var queryResult = await repository.FindOneAsync(r => r.Name.StartsWith("Big"), Xunit.TestContext.Current.CancellationToken);
         queryResult.Should().NotBeNull();
 
-        var queryResults = await repository.FindAllAsync(r => r.Name.StartsWith("Big"));
+        var queryResults = await repository.FindAllAsync(r => r.Name.StartsWith("Big"), Xunit.TestContext.Current.CancellationToken);
         queryResults.Should().NotBeNull();
         queryResults.Count.Should().BeGreaterThan(0);
 
         // count
-        var fullCount = await repository.CountAsync();
+        var fullCount = await repository.CountAsync(Xunit.TestContext.Current.CancellationToken);
         fullCount.Should().BeGreaterThan(0);
 
-        var count = await repository.CountAsync(r => r.Name.StartsWith("Big"));
+        var count = await repository.CountAsync(r => r.Name.StartsWith("Big"), Xunit.TestContext.Current.CancellationToken);
         count.Should().BeGreaterThan(0);
 
 
         // delete
-        await repository.DeleteAsync(readResult);
+        await repository.DeleteAsync(readResult, Xunit.TestContext.Current.CancellationToken);
 
-        var deletedResult = await repository.FindAsync(item.Id);
+        var deletedResult = await repository.FindAsync(item.Id, Xunit.TestContext.Current.CancellationToken);
         deletedResult.Should().BeNull();
     }
 
@@ -83,12 +83,12 @@ public class ItemRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         repository.Should().NotBeNull();
 
         // create
-        var createResult = await repository.InsertAsync(item);
+        var createResult = await repository.InsertAsync(item, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(item.Id);
 
         // read
-        var readResult = await repository.FindAsync(item.Id);
+        var readResult = await repository.FindAsync(item.Id, Xunit.TestContext.Current.CancellationToken);
         readResult.Should().NotBeNull();
         readResult.Id.Should().Be(item.Id);
         readResult.OwnerId.Should().Be(item.OwnerId);
@@ -96,31 +96,31 @@ public class ItemRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         // update
         readResult.Name = "Big " + readResult.Name;
 
-        var updateResult = await repository.UpdateAsync(readResult);
+        var updateResult = await repository.UpdateAsync(readResult, Xunit.TestContext.Current.CancellationToken);
         updateResult.Should().NotBeNull();
         updateResult.Id.Should().Be(item.Id);
         updateResult.OwnerId.Should().Be(item.OwnerId);
 
         // query
-        var queryResult = await repository.FindOneAsync(r => r.Name.StartsWith("Big"));
+        var queryResult = await repository.FindOneAsync(r => r.Name.StartsWith("Big"), Xunit.TestContext.Current.CancellationToken);
         queryResult.Should().NotBeNull();
 
-        var queryResults = await repository.FindAllAsync(r => r.Name.StartsWith("Big"));
+        var queryResults = await repository.FindAllAsync(r => r.Name.StartsWith("Big"), Xunit.TestContext.Current.CancellationToken);
         queryResults.Should().NotBeNull();
         queryResults.Count.Should().BeGreaterThan(0);
 
         // count
-        var fullCount = await repository.CountAsync();
+        var fullCount = await repository.CountAsync(Xunit.TestContext.Current.CancellationToken);
         fullCount.Should().BeGreaterThan(0);
 
-        var count = await repository.CountAsync(r => r.Name.StartsWith("Big"));
+        var count = await repository.CountAsync(r => r.Name.StartsWith("Big"), Xunit.TestContext.Current.CancellationToken);
         count.Should().BeGreaterThan(0);
 
 
         // delete
-        await repository.DeleteAsync(readResult);
+        await repository.DeleteAsync(readResult, Xunit.TestContext.Current.CancellationToken);
 
-        var deletedResult = await repository.FindAsync(item.Id);
+        var deletedResult = await repository.FindAsync(item.Id, Xunit.TestContext.Current.CancellationToken);
         deletedResult.Should().BeNull();
     }
 

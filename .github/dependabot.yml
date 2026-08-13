@@ -41,10 +41,6 @@ updates:
         patterns:
           - "Serilog"
           - "Serilog.*"
-      Hangfire:
-        patterns:
-          - "Hangfire"
-          - "Hangfire.*"
       Testcontainers:
         patterns:
           - "Testcontainers.*"
@@ -55,6 +51,3 @@ updates:
           - "xunit.core"
           - "xunit.extensibility.*"
           - "xunit.runner.*"
-    ignore:
-      - dependency-name: FluentAssertions
-        versions: [">=8.0.0"]

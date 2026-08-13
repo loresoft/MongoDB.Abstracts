@@ -1,4 +1,5 @@
 accessor
+annotatable
 app
 awaitable
 cacheable
@@ -13,6 +14,7 @@ deserializing
 inline
 json
 linq
+metadata
 middleware
 mongo
 mongodb

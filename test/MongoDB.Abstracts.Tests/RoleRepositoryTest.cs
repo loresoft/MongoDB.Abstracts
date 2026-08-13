@@ -26,7 +26,7 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var result = await roleRepo.InsertAsync(role);
+        var result = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         result.Should().NotBeNull();
         result.Id.Should().Be(role.Id);
     }
@@ -55,7 +55,7 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         roleRepo.InsertBatch(roles);
 
         var roleQuery = Services.GetRequiredService<IMongoEntityQuery<Role>>();
-        var results = await roleQuery.FindAllAsync(r => r.NormalizedName == "batchrole");
+        var results = await roleQuery.FindAllAsync(r => r.NormalizedName == "batchrole", Xunit.TestContext.Current.CancellationToken);
         results.Should().NotBeNull();
         results.Count.Should().BeGreaterThan(0);
     }
@@ -74,7 +74,7 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var result = await roleRepo.UpsertAsync(role);
+        var result = await roleRepo.UpsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         result.Should().NotBeNull();
         result.Id.Should().Be(role.Id);
     }
@@ -110,11 +110,11 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var result = await roleRepo.UpsertAsync(role);
+        var result = await roleRepo.UpsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         result.Should().NotBeNull();
         result.Id.Should().Be(role.Id);
 
-        var deleted = await roleRepo.DeleteAllAsync(r => r.NormalizedName == "deleterole");
+        var deleted = await roleRepo.DeleteAllAsync(r => r.NormalizedName == "deleterole", Xunit.TestContext.Current.CancellationToken);
         deleted.Should().BeGreaterThan(0);
     }
 
@@ -152,14 +152,14 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var createResult = await roleRepo.InsertAsync(role);
+        var createResult = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(role.Id);
 
         createResult.Name = "CreateUpdateRole";
         createResult.NormalizedName = "createupdaterole";
 
-        var updateResult = await roleRepo.UpdateAsync(createResult);
+        var updateResult = await roleRepo.UpdateAsync(createResult, Xunit.TestContext.Current.CancellationToken);
         updateResult.Should().NotBeNull();
         updateResult.Id.Should().Be(role.Id);
     }
@@ -177,11 +177,11 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var createResult = await roleRepo.InsertAsync(role);
+        var createResult = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(role.Id);
 
-        var readResult = await roleRepo.FindAsync(role.Id);
+        var readResult = await roleRepo.FindAsync(role.Id, Xunit.TestContext.Current.CancellationToken);
         readResult.Should().NotBeNull();
         readResult.Id.Should().Be(role.Id);
     }
@@ -199,13 +199,13 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var createResult = await roleRepo.InsertAsync(role);
+        var createResult = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(role.Id);
 
-        await roleRepo.DeleteAsync(role.Id);
+        await roleRepo.DeleteAsync(role.Id, Xunit.TestContext.Current.CancellationToken);
 
-        var findResult = await roleRepo.FindAsync(role.Id);
+        var findResult = await roleRepo.FindAsync(role.Id, Xunit.TestContext.Current.CancellationToken);
         findResult.Should().BeNull();
     }
 
@@ -222,11 +222,11 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var createResult = await roleRepo.InsertAsync(role);
+        var createResult = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(role.Id);
 
-        var results = await roleRepo.FindAllAsync(r => r.Name.StartsWith("Create"));
+        var results = await roleRepo.FindAllAsync(r => r.Name.StartsWith("Create"), Xunit.TestContext.Current.CancellationToken);
         results.Should().NotBeNull();
         results.Count.Should().BeGreaterThan(0);
     }
@@ -244,11 +244,11 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var createResult = await roleRepo.InsertAsync(role);
+        var createResult = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(role.Id);
 
-        var findResult = await roleRepo.FindOneAsync(r => r.Name.StartsWith("Create"));
+        var findResult = await roleRepo.FindOneAsync(r => r.Name.StartsWith("Create"), Xunit.TestContext.Current.CancellationToken);
         findResult.Should().NotBeNull();
     }
 
@@ -259,7 +259,7 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var results = await roleRepo.FindAllAsync(r => r.Name == "blah" + DateTime.Now.Ticks);
+        var results = await roleRepo.FindAllAsync(r => r.Name == "blah" + DateTime.Now.Ticks, Xunit.TestContext.Current.CancellationToken);
         results.Should().NotBeNull();
         results.Count.Should().Be(0);
     }
@@ -277,7 +277,7 @@ public class RoleRepositoryTest(DatabaseFixture databaseFixture) : DatabaseTestB
         var roleRepo = Services.GetRequiredService<IMongoEntityRepository<Role>>();
         roleRepo.Should().NotBeNull();
 
-        var createResult = await roleRepo.InsertAsync(role);
+        var createResult = await roleRepo.InsertAsync(role, Xunit.TestContext.Current.CancellationToken);
         createResult.Should().NotBeNull();
         createResult.Id.Should().Be(role.Id);
 
